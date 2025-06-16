@@ -1,0 +1,41 @@
+services:
+  mosquitto:
+    # MQTT broker
+    image: eclipse-mosquitto:2.0.21
+    container_name: mosquitto
+    ports:
+      - "1883:1883"
+    volumes:
+      - ./config_files/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - mosquitto_data:/mosquitto/data
+    restart: unless-stopped
+
+  iot_simulator:
+    build: ./IoT
+    container_name: iot_simulator
+    depends_on:
+      - mosquitto
+    restart: on-failure
+    environment:
+      - MQTT_BROKER=mosquitto
+      - MQTT_PORT=1883
+      - MQTT_TOPIC=parking/
+    volumes:
+      - ./IoT/parking_data.txt:/app/parking_data.txt
+  
+  parking_db:
+    image: postgres:17
+    container_name: parking_db
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: parking_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - parking_data:/var/lib/postgresql/data
+    restart: unless-stopped
+  
+volumes:
+  mosquitto_data:
+  parking_data:
