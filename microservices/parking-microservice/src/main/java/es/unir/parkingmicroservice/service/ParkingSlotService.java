@@ -3,9 +3,9 @@ package es.unir.parkingmicroservice.service;
 import es.unir.parkingmicroservice.model.Parking;
 import es.unir.parkingmicroservice.model.ParkingSlot;
 import es.unir.parkingmicroservice.repository.ParkingSlotRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -26,7 +26,7 @@ public class ParkingSlotService {
                         .parking(parking)
                         .floor(floor)
                         .slot(slot)
-                        .occupied(false)
+                        .isOccupied(false)
                         .build();
                 parkingSlots.add(parkingSlot);
             }

@@ -1,13 +1,14 @@
 package es.unir.parkingmicroservice.model;
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
-@Entity
-@Table(name = "parkings")
+@Document(collection = "parkings")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -15,24 +16,23 @@ import lombok.NoArgsConstructor;
 public class Parking {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String Id;
+    private String id;
 
-    @Column(name = "name", nullable = false)
+    @Field("name")
     private String name;
 
-    @Column(name = "administrator_email", unique = true, nullable = false)
+    @Field("administratorEmail")
     private String administratorEmail;
 
-    @Column(name = "location", nullable = false)
+    @Field("location")
     private String location;
 
-    @Column(name = "number_of_floors", nullable = false)
+    @Field("numberOfFloors")
     private Integer numberOfFloors;
 
-    @Column(name = "slots_per_floor", nullable = false)
+    @Field("slotsPerFloor")
     private Integer slotsPerFloor;
 
-    @Column(name = "enabled", nullable = false)
+    @Field("enabled")
     private boolean enabled;
 }

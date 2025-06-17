@@ -24,18 +24,17 @@ services:
       - ./IoT/parking_data.txt:/app/parking_data.txt
   
   parking_db:
-    image: postgres:17
+    image: mongo:8
     container_name: parking_db
-    environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: parking_db
+    # environment:
+    #   - MONGO_INITDB_ROOT_USERNAME=mongoadmin
+    #   - MONGO_INITDB_ROOT_PASSWORD=mongopassword
     ports:
-      - "5432:5432"
+      - "27017:27017"
     volumes:
-      - parking_data:/var/lib/postgresql/data
-    restart: unless-stopped
+      - parking_database:/data/db
+      - ./config_files/mongodb:/docker-entrypoint-initdb.d:ro
   
 volumes:
   mosquitto_data:
-  parking_data:
+  parking_database:

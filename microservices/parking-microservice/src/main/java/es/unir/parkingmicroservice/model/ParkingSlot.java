@@ -1,16 +1,17 @@
 package es.unir.parkingmicroservice.model;
 
-
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "parking_slots")
+@Document(collection = "parking_slots")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -18,22 +19,20 @@ import java.time.LocalDateTime;
 public class ParkingSlot {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parking_id", nullable = false)
+    @DBRef
     private Parking parking;
 
-    @Column(name = "floor", nullable = false)
+    @Field("floor")
     private Integer floor;
 
-    @Column(name = "slot", nullable = false)
+    @Field("slot")
     private Integer slot;
 
-    @Column(name = "occupied", nullable = false)
-    private boolean occupied = false;
+    @Field("isOccupied")
+    private boolean isOccupied = false;
 
-    @Column(name = "last_updated")
+    @Field("last_updated")
     private LocalDateTime lastUpdated;
 }

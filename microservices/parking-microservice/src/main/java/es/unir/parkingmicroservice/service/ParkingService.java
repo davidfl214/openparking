@@ -8,9 +8,9 @@ import es.unir.parkingmicroservice.dto.ParkingDTO;
 import es.unir.parkingmicroservice.mapper.ParkingMapper;
 import es.unir.parkingmicroservice.model.Parking;
 import es.unir.parkingmicroservice.repository.ParkingRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 

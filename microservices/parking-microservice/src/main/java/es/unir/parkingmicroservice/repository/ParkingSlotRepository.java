@@ -1,12 +1,12 @@
 package es.unir.parkingmicroservice.repository;
 
 import es.unir.parkingmicroservice.model.ParkingSlot;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface ParkingSlotRepository extends JpaRepository<ParkingSlot, String> {
+public interface ParkingSlotRepository extends MongoRepository<ParkingSlot, String> {
 
     List<ParkingSlot> findByParkingId(String parkingId);
 
