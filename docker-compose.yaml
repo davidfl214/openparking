@@ -26,9 +26,6 @@ services:
   parking_db:
     image: mongo:8
     container_name: parking_db
-    # environment:
-    #   - MONGO_INITDB_ROOT_USERNAME=mongoadmin
-    #   - MONGO_INITDB_ROOT_PASSWORD=mongopassword
     ports:
       - "27017:27017"
     volumes:
