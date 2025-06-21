@@ -1,16 +1,22 @@
 import { useState } from 'react';
-import axios from 'axios';
 
 function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
-            const res = await axios.post('http://localhost:8080/api/auth/login', { email, password });
+            const res = await fetch('http://localhost:8080/api/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email, password }),
+            });
+            const data = await res.json();
             // Cambiar la comprobación:
-            if (res.data === 'ADMIN') {
+            if (data === 'ADMIN') {
                 alert("Bienvenido admin");
                 window.location.href = '/map';
             }
@@ -18,7 +24,11 @@ function Login() {
                 alert("No tienes permisos de usuario");
             }
         } catch (err) {
-            alert("Error: " + err.response.data);
+            if (err instanceof Error) {
+                alert("Error: " + err.message);
+            } else {
+                alert("Error desconocido");
+            }
         }
     };
 
