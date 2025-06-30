@@ -1,42 +1,54 @@
 package org.example.openparkingbackendauth.service;
 
+import lombok.RequiredArgsConstructor;
+import org.example.openparkingbackendauth.dto.AuthResponse;
 import org.example.openparkingbackendauth.dto.LoginRequest;
 import org.example.openparkingbackendauth.dto.RegisterRequest;
+import org.example.openparkingbackendauth.model.Role;
 import org.example.openparkingbackendauth.model.User;
 import org.example.openparkingbackendauth.repository.UserRepository;
+import org.example.openparkingbackendauth.security.CustomUserDetails;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class AuthService {
+
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
+    private final AuthenticationManager authenticationManager;
 
-    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
+    public AuthResponse register(RegisterRequest request) {
+        var user = User.builder()
+                .name(request.getName())
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .role(Role.USER)
+                .build();
 
-    public void register(RegisterRequest request) {
-        if (userRepository.existsByEmail(request.getEmail())) {
-            throw new RuntimeException("Ya existe un usuario con ese email");
-        }
-        User user = new User();
-        user.setEmail(request.getEmail());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setRole(request.getRole());
         userRepository.save(user);
+
+        var token = jwtService.generateToken(new CustomUserDetails(user));
+        return new AuthResponse(token);
     }
 
-    public String login(LoginRequest request) {
-        User user = userRepository.findByEmail(request.getEmail())
+    public AuthResponse login(LoginRequest request) {
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.getEmail(),
+                        request.getPassword()
+                )
+        );
+
+        var user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Contraseña incorrecta");
-        }
-
-        return user.getRole().toString(); // Devolvemos el rol como respuesta
+        var token = jwtService.generateToken(new CustomUserDetails(user));
+        return new AuthResponse(token);
     }
 }
 
