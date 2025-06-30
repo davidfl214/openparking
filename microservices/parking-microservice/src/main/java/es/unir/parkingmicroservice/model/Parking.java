@@ -27,6 +27,12 @@ public class Parking {
     @Field("location")
     private String location;
 
+    @Field("latitude")
+    private Double latitude;
+
+    @Field("longitude")
+    private Double longitude;
+
     @Field("numberOfFloors")
     private Integer numberOfFloors;
 
