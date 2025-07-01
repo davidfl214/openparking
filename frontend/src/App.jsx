@@ -5,16 +5,21 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import AdminLogin from './pages/AdminLogin';
 import HomeMap from './pages/HomeMap';
+import UserHome from "./pages/UserHome.jsx";
+import AdminDashboard from "./pages/AdminDashboard.jsx";
 
 function App() {
     return (
         <Router>
             <Routes>
-                <Route path="/" element={<Navigate to="/register" />} />
+                <Route path="/" element={<Navigate to="/admin" />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/admin" element={<AdminLogin />} />
                 <Route path="/home" element={<HomeMap />} />
+                <Route path="/user-home" element={<UserHome />} />
+                <Route path="/admin-home" element={<AdminDashboard />} />
+
                 {/* Rutas no encontradas */}
                 <Route path="*" element={<h2>404 - Página no encontrada</h2>} />
             </Routes>
