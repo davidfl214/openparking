@@ -33,3 +33,26 @@ export function MarkerLocationClickHandler({
 
     return null;
 }
+
+export function SearchLocationHandler({
+    latitudeSearch,
+    longitudeSearch,
+}: {
+    latitudeSearch: number | null;
+    longitudeSearch: number | null;
+}) {
+    const map = useMap();
+
+    useEffect(() => {
+        if (latitudeSearch !== null && longitudeSearch !== null) {
+            map.flyTo([latitudeSearch, longitudeSearch], 14,
+                {
+                    animate: true,
+                    duration: 3,
+                }
+            );
+        }
+    }, [latitudeSearch, longitudeSearch, map]);
+
+    return null;
+}

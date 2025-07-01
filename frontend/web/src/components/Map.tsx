@@ -1,20 +1,22 @@
 import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { useGeolocation } from "../hooks/useGeolocation";
-import { useEffect, useRef, useState, type JSX } from "react";
+import { useContext, useEffect, useRef, useState, type JSX } from "react";
 import { type LatLngTuple } from "leaflet";
 import Swal from "sweetalert2";
 import type { ParkingData } from "../types/parking";
 import { fetchParkings } from "../utils/getParkingData";
 import { createStyledMarker, getMarkerColorClass } from "../utils/markerStyles";
-import { MarkerLocationClickHandler, UserLocationHandler } from "../utils/locationHandler";
+import { MarkerLocationClickHandler, SearchLocationHandler, UserLocationHandler } from "../utils/locationHandler";
 import { Stomp, type Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
+import { LocationContext } from "../context/LocationContext";
 
 const API_BASE_URL =
     import.meta.env.REACT_APP_API_BASE_URL || "http://localhost:8080";
 
 export default function Map(): JSX.Element {
+    const { latitudeSearch, longitudeSearch } = useContext(LocationContext);
     const { position: userLocation, error: locationError } = useGeolocation();
     const [parkings, setParkings] = useState<ParkingData[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
@@ -133,6 +135,7 @@ export default function Map(): JSX.Element {
         >
             <UserLocationHandler userLocation={userLocation} />
             <MarkerLocationClickHandler markerLocation={markerLocation} />
+            <SearchLocationHandler latitudeSearch={latitudeSearch} longitudeSearch={longitudeSearch} />
             <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
