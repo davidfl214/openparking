@@ -1,35 +1,14 @@
 package org.example.openparkingbackendauth.dto;
 
-import lombok.Getter;
-import lombok.Setter;
 import org.example.openparkingbackendauth.model.Role;
 import lombok.Data;
 
 
 @Data
 public class RegisterRequest {
-    private String name;
     private String email;
     private String password;
     private Role role;
-
-    public RegisterRequest() {
-    }
-
-    public RegisterRequest(String name, String email, String password, Role role) {
-        this.name = name;
-        this.email = email;
-        this.password = password;
-        this.role = role;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public String getEmail() {
         return email;

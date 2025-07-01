@@ -1,9 +1,11 @@
 package es.unir.parkingmicroservice.service;
 
+import es.unir.parkingmicroservice.dto.ParkingSlotStatus;
 import es.unir.parkingmicroservice.model.Parking;
 import es.unir.parkingmicroservice.model.ParkingSlot;
 import es.unir.parkingmicroservice.repository.ParkingSlotRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +19,7 @@ import java.util.Optional;
 public class ParkingSlotService {
 
     private final ParkingSlotRepository parkingSlotRepository;
+    private final SimpMessagingTemplate messagingTemplate;
 
     public void generateInitialParkingSlots(Parking parking) {
         List<ParkingSlot> parkingSlots = new ArrayList<>();
@@ -43,6 +46,10 @@ public class ParkingSlotService {
         }
     }
 
+    public List<ParkingSlot> getParkingSlotsByParkingId(String parkingId) {
+        return parkingSlotRepository.findByParkingId(parkingId);
+    }
+
     @Transactional
     public void updateSlotOccupancy(String parkingId, Integer floor, Integer slot, boolean isOccupied, LocalDateTime messageTimestamp) {
         try{
@@ -57,6 +64,24 @@ public class ParkingSlotService {
                 parkingSlot.setOccupied(isOccupied);
                 parkingSlot.setLastUpdated(messageTimestamp);
                 parkingSlotRepository.save(parkingSlot);
+
+                Parking associatedParking = parkingSlot.getParking();
+                if (associatedParking != null) {
+                    List<ParkingSlot> parkingSlots = getParkingSlotsByParkingId(associatedParking.getId());
+                    int occupiedSlots = (int) parkingSlots.stream().filter(ParkingSlot::isOccupied).count();
+                    ParkingSlotStatus updatedStatus = ParkingSlotStatus.builder()
+                            .id(associatedParking.getId())
+                            .name(associatedParking.getName())
+                            .location(associatedParking.getLocation())
+                            .latitude(associatedParking.getLatitude())
+                            .longitude(associatedParking.getLongitude())
+                            .totalSlots(parkingSlots.size())
+                            .occupiedSlots(occupiedSlots)
+                            .enabled(associatedParking.isEnabled())
+                            .build();
+
+                    messagingTemplate.convertAndSend("/topic/parkingStatus", updatedStatus);
+                }
 
             } else {
                 throw new IllegalArgumentException("Parking slot not found for parkingId: " + parkingId + ", floor: " + floor + ", slot: " + slot);

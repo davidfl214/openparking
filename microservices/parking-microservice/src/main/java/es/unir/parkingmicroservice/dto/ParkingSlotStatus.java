@@ -5,11 +5,11 @@ import lombok.Data;
 
 @Data
 @Builder
-public class ParkingDTO {
+public class ParkingSlotStatus {
+
+    private String id;
 
     private String name;
-
-    private String administratorEmail;
 
     private String location;
 
@@ -17,10 +17,9 @@ public class ParkingDTO {
 
     private Double longitude;
 
-    private Integer numberOfFloors;
+    private Integer totalSlots;
 
-    private Integer slotsPerFloor;
+    private Integer occupiedSlots;
 
     private boolean enabled;
-
 }

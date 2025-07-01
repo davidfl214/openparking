@@ -1,24 +1,187 @@
-import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
+import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
+import { useGeolocation } from "../hooks/useGeolocation";
+import { useContext, useEffect, useRef, useState, type JSX } from "react";
+import { type LatLngTuple } from "leaflet";
+import Swal from "sweetalert2";
+import type { ParkingData } from "../types/parking";
+import { fetchParkings } from "../utils/getParkingData";
+import { createStyledMarker, getMarkerColorClass } from "../utils/markerStyles";
+import { MarkerLocationClickHandler, SearchLocationHandler, UserLocationHandler } from "../utils/locationHandler";
+import { Stomp, type Client } from "@stomp/stompjs";
+import SockJS from "sockjs-client";
+import { LocationContext } from "../context/LocationContext";
 
-export default function Map() {
+const API_BASE_URL =
+    import.meta.env.REACT_APP_API_BASE_URL || "http://localhost:8080";
+
+export default function Map(): JSX.Element {
+    const { latitudeSearch, longitudeSearch } = useContext(LocationContext);
+    const { position: userLocation, error: locationError } = useGeolocation();
+    const [parkings, setParkings] = useState<ParkingData[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [markerLocation, setMarkerLocation] = useState<LatLngTuple | null>(null);
+    const isMobile = window.innerWidth <= 640;
+    const stompClientRef = useRef<Client | null>(null);
+
+
+    useEffect(() => {
+        let stompClient: Client | null = null;
+
+        const loadInitialParkings = async (): Promise<void> => {
+            try {
+                const data = await fetchParkings();
+                setParkings(data);
+            } catch (error) {
+                Swal.fire({
+                    toast: true,
+                    position: isMobile ? "top" : "top-end",
+                    icon: "error",
+                    title: "<strong>Failed to load initial parking data</strong>",
+                    showConfirmButton: false,
+                    timer: 3000,
+                    background: "#fef2f2",
+                    color: "#991b1b",
+                    timerProgressBar: true,
+                });
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        const connectWebSocket = () => {
+            const socket = new SockJS(`${API_BASE_URL}/ws`);
+            stompClient = Stomp.over(socket);
+
+            stompClientRef.current = stompClient;
+
+            stompClient.debug = () => {}
+
+            stompClient.onConnect = () => {
+                stompClient?.subscribe("/topic/parkingStatus", (message) => {
+                    const updatedParking: ParkingData = JSON.parse(
+                        message.body
+                    );
+                    setParkings((prevParkings) => {
+                        const existingIndex = prevParkings.findIndex(
+                            (p) => p.id === updatedParking.id
+                        );
+                        if (existingIndex > -1) {
+                            const newParkings = [...prevParkings];
+                            newParkings[existingIndex] = updatedParking;
+                            return newParkings;
+                        } else {
+                            return [...prevParkings, updatedParking];
+                        }
+                    });
+                });
+            };
+
+            stompClient.onStompError = () => {
+                Swal.fire({
+                    toast: true,
+                    position: isMobile ? "top" : "top-end",
+                    icon: "error",
+                    title: "<strong>WebSocket Error</strong>",
+                    html: "Could not connect to real-time updates. Please refresh.",
+                    showConfirmButton: false,
+                    timer: 5000,
+                    background: "#fef2f2",
+                    color: "#991b1b",
+                    timerProgressBar: true,
+                });
+            };
+
+            stompClient.activate();
+        };
+
+        loadInitialParkings();
+        connectWebSocket();
+
+        return () => {
+            if (stompClientRef.current?.connected) {
+                stompClientRef.current.deactivate();
+            }
+        };
+    }, []);
+
+    useEffect(() => {
+        if (locationError) {
+            Swal.fire({
+                toast: true,
+                position: isMobile ? "top" : "top-end",
+                icon: "error",
+                title: "<strong>Location Error</strong>",
+                html: locationError,
+                showConfirmButton: false,
+                timer: 3000,
+                background: "#fef2f2",
+                color: "#991b1b",
+                timerProgressBar: true,
+            });
+        }
+    }, [locationError]);
+
+    const defaultCenter: LatLngTuple = [
+        40.416918404895505, -3.7034907813021767,
+    ];
+
     return (
         <MapContainer
-            center={[43.532541129545194, -5.661245469585264]}
+            center={defaultCenter}
             zoom={14}
             scrollWheelZoom={true}
-            className="h-[80vh] w-[100wh]"
+            className="h-[85vh] w-[100vw] laptop:h-[90vh]"
         >
+            <UserLocationHandler userLocation={userLocation} />
+            <MarkerLocationClickHandler markerLocation={markerLocation} />
+            <SearchLocationHandler latitudeSearch={latitudeSearch} longitudeSearch={longitudeSearch} />
             <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
-            <Marker position={[43.54090244826075, -5.659484602848297]}>
-                <Popup>Parking CC San Agustín</Popup>
-            </Marker>
-            <Marker position={[43.54011653870023, -5.640089963864758]}>
-                <Popup>Parque Hermanos Castro</Popup>
-            </Marker>
+            {!loading &&
+                parkings.map(
+                    (parking: ParkingData) =>
+                        parking.enabled && (
+                            <Marker
+                                key={parking.id}
+                                position={[parking.latitude, parking.longitude]}
+                                icon={createStyledMarker(
+                                    getMarkerColorClass(parking)
+                                )}
+                                eventHandlers={{
+                                    click: () => {
+                                        setMarkerLocation([
+                                            parking.latitude,
+                                            parking.longitude,
+                                        ]);
+                                    },
+                                }}
+                            >
+                                <Popup>
+                                    <div className="text-center p-2">
+                                        <h2 className="font-bold text-lg">
+                                            {parking.name}
+                                        </h2>
+                                        <p className="text-gray-600">
+                                            {parking.location}
+                                        </p>
+                                        <div className="flex justify-center gap-2 mt-2">
+                                            <span className="text-green-600 font-semibold">
+                                                {parking.totalSlots -
+                                                    parking.occupiedSlots}{" "}
+                                                Free
+                                            </span>
+                                            <span className="text-red-600 font-semibold">
+                                                {parking.occupiedSlots} Occupied
+                                            </span>
+                                        </div>
+                                    </div>
+                                </Popup>
+                            </Marker>
+                        )
+                )}
         </MapContainer>
     );
 }
