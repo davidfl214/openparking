@@ -91,4 +91,41 @@ public class ParkingSlotService {
         }
     }
 
+    @Override
+    public List<ParkingSlot> getAllSlots() {
+        return repository.findAll();
+    }
+
+    @Override
+    public Optional<ParkingSlot> getSlotById(String id) {
+        return repository.findById(id);
+    }
+
+    @Override
+    public ParkingSlot createSlot(ParkingSlot slot) {
+        slot.setLastUpdated(LocalDateTime.now());
+        return repository.save(slot);
+    }
+
+    @Override
+    public Optional<ParkingSlot> updateSlot(String id, ParkingSlot updatedSlot) {
+        return repository.findById(id).map(existing -> {
+            existing.setParking(updatedSlot.getParking());
+            existing.setFloor(updatedSlot.getFloor());
+            existing.setSlot(updatedSlot.getSlot());
+            existing.setIsOccupied(updatedSlot.isIsOccupied());
+            existing.setLastUpdated(LocalDateTime.now());
+            return repository.save(existing);
+        });
+    }
+
+    @Override
+    public boolean deleteSlot(String id) {
+        if (repository.existsById(id)) {
+            repository.deleteById(id);
+            return true;
+        }
+        return false;
+    }
+
 }

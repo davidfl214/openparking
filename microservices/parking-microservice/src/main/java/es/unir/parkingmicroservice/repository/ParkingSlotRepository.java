@@ -11,4 +11,7 @@ public interface ParkingSlotRepository extends MongoRepository<ParkingSlot, Stri
     List<ParkingSlot> findByParkingId(String parkingId);
 
     Optional<ParkingSlot> findByParkingIdAndFloorAndSlot(String parkingId, Integer floor, Integer slot);
+
+    List<ParkingSlot> findByParkingId(String parkingId);
+    List<ParkingSlot> findByIsOccupied(boolean isOccupied);
 }
