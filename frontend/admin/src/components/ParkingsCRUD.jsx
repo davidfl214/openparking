@@ -1,5 +1,5 @@
 import React from 'react';
-import ParkingList from './ParkingList';
+import ParkingList from './ParkingList.jsx';
 
 const ParkingsCRUD = () => {
     return <ParkingList useMock={true} />;

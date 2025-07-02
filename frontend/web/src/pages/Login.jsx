@@ -4,17 +4,32 @@ import {
     Container, Typography, TextField, Button, Paper, Link
 } from '@mui/material';
 
-function Register() {
-    const [name, setName] = useState('');
+function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.post('http://localhost:8080/api/auth/register', { name, email, password });
-            alert("Usuario registrado correctamente. Ahora puedes iniciar sesión.");
-            window.location.href = '/login';
+            const res = await axios.post('http://localhost:8080/api/auth/login', {
+                email,
+                password
+            });
+
+            const { token, role } = res.data;
+
+            // Guardar el JWT en localStorage
+            localStorage.setItem('jwt', token);
+
+            // Redirigir según el rol
+            if (role === 'USER') {
+                window.location.href = '/user-home';
+            } else if (role === 'ADMIN') {
+                window.location.href = '/admin-home';
+            } else {
+                alert('Rol no reconocido');
+            }
+
         } catch (err) {
             const message = err.response?.data || "Error de conexión con el servidor";
             alert("Error: " + message);
@@ -26,7 +41,7 @@ function Register() {
             style={{
                 backgroundImage: `
                     linear-gradient(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6)),
-                    url('https://blog.openstreetmap.org/wp-content/uploads/2023/08/400px-Hedge_End_Coloured.png')
+                    url('https://blog.openstreetmap.org/images/lp1.jpg')
                 `,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
@@ -55,14 +70,6 @@ function Register() {
                 <Paper elevation={6} style={{ padding: '2rem', borderRadius: '1rem' }}>
                     <form onSubmit={handleSubmit}>
                         <TextField
-                            label="Nombre completo"
-                            fullWidth
-                            margin="normal"
-                            variant="outlined"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                        />
-                        <TextField
                             label="Correo electrónico"
                             type="email"
                             fullWidth
@@ -86,13 +93,13 @@ function Register() {
                             variant="contained"
                             style={{ marginTop: '1rem' }}
                         >
-                            Registrarse
+                            Entrar
                         </Button>
                     </form>
                     <Typography variant="body2" align="center" style={{ marginTop: '1.5rem' }}>
-                        ¿Ya tienes cuenta?{' '}
-                        <Link href="/login" underline="hover">
-                            Inicia sesión
+                        ¿No tienes cuenta?{' '}
+                        <Link href="/web/src/pages/Register" underline="hover">
+                            Regístrate aquí
                         </Link>
                     </Typography>
                 </Paper>
@@ -101,4 +108,4 @@ function Register() {
     );
 }
 
-export default Register;
+export default Login;

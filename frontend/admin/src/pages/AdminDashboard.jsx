@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Box, Tabs, Tab, Typography } from '@mui/material';
-import UsersCRUD from '../components/UsersCRUD';
-import ParkingsCRUD from '../components/ParkingsCRUD';
-import PlazasCRUD from '../components/PlazasCRUD';
+import UsersCRUD from '../components/UsersCRUD.jsx';
+import ParkingsCRUD from '../components/ParkingsCRUD.jsx';
+import PlazasCRUD from '../components/PlazasCRUD.jsx';
 
 function TabPanel({ children, value, index }) {
     return (

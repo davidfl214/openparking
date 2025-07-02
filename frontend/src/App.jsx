@@ -1,12 +1,12 @@
 // src/App.jsx
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import Login from './pages/Login';
-import Register from './pages/Register';
+import Login from '../web/src/pages/Login.jsx';
+import Register from '../web/src/pages/Register.jsx';
 import AdminLogin from './pages/AdminLogin';
 import HomeMap from './pages/HomeMap';
 import UserHome from "./pages/UserHome.jsx";
-import AdminDashboard from "./pages/AdminDashboard.jsx";
+import AdminDashboard from "../admin/src/pages/AdminDashboard.jsx";
 
 function App() {
     return (

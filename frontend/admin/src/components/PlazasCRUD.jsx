@@ -1,6 +1,6 @@
 // src/components/SlotsCRUD.js
 import React from 'react';
-import SlotList from './SlotList';
+import SlotList from './SlotList.jsx';
 
 const PlazasCRUD = () => {
     return (
