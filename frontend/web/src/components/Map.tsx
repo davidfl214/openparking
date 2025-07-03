@@ -1,4 +1,4 @@
-import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
+import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { useGeolocation } from "../hooks/useGeolocation";
 import { useContext, useEffect, useRef, useState, type JSX } from "react";
@@ -12,16 +12,14 @@ import { Stomp, type Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import { LocationContext } from "../context/LocationContext";
 
-const API_BASE_URL =
-    import.meta.env.REACT_APP_API_BASE_URL || "http://localhost:8080";
+const PARKINGS_MICROSERVICE_BASE_URL =
+    import.meta.env.VITE_PARKINGS_MICROSERVICE_URL || "http://localhost:8080";
 
 export default function Map(): JSX.Element {
-    const { latitudeSearch, longitudeSearch } = useContext(LocationContext);
+    const { latitudeSearch, longitudeSearch, parkingData, isMobile, setParkingData } = useContext(LocationContext);
     const { position: userLocation, error: locationError } = useGeolocation();
-    const [parkings, setParkings] = useState<ParkingData[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [markerLocation, setMarkerLocation] = useState<LatLngTuple | null>(null);
-    const isMobile = window.innerWidth <= 640;
     const stompClientRef = useRef<Client | null>(null);
 
 
@@ -30,8 +28,8 @@ export default function Map(): JSX.Element {
 
         const loadInitialParkings = async (): Promise<void> => {
             try {
-                const data = await fetchParkings();
-                setParkings(data);
+                const data = await fetchParkings(PARKINGS_MICROSERVICE_BASE_URL);
+                setParkingData(data);
             } catch (error) {
                 Swal.fire({
                     toast: true,
@@ -50,7 +48,7 @@ export default function Map(): JSX.Element {
         };
 
         const connectWebSocket = () => {
-            const socket = new SockJS(`${API_BASE_URL}/ws`);
+            const socket = new SockJS(`${PARKINGS_MICROSERVICE_BASE_URL}/ws`);
             stompClient = Stomp.over(socket);
 
             stompClientRef.current = stompClient;
@@ -62,7 +60,7 @@ export default function Map(): JSX.Element {
                     const updatedParking: ParkingData = JSON.parse(
                         message.body
                     );
-                    setParkings((prevParkings) => {
+                    setParkingData((prevParkings) => {
                         const existingIndex = prevParkings.findIndex(
                             (p) => p.id === updatedParking.id
                         );
@@ -131,7 +129,7 @@ export default function Map(): JSX.Element {
             center={defaultCenter}
             zoom={14}
             scrollWheelZoom={true}
-            className="h-[85vh] w-[100vw] laptop:h-[90vh]"
+            className="h-[85vh] w-[100vw]"
         >
             <UserLocationHandler userLocation={userLocation} />
             <MarkerLocationClickHandler markerLocation={markerLocation} />
@@ -141,7 +139,7 @@ export default function Map(): JSX.Element {
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
             {!loading &&
-                parkings.map(
+                parkingData.map(
                     (parking: ParkingData) =>
                         parking.enabled && (
                             <Marker
