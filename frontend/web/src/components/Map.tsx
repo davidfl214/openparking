@@ -15,6 +15,8 @@ import {
 import { Stomp, type Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import { LocationContext } from "../context/LocationContext";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@mui/material";
 
 const PARKINGS_MICROSERVICE_BASE_URL =
     import.meta.env.VITE_PARKINGS_MICROSERVICE_URL || "http://localhost:8080";
@@ -33,6 +35,7 @@ export default function Map(): JSX.Element {
         null
     );
     const stompClientRef = useRef<Client | null>(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         let stompClient: Client | null = null;
@@ -191,6 +194,21 @@ export default function Map(): JSX.Element {
                                                 {parking.occupiedSlots} Occupied
                                             </span>
                                         </div>
+                                        <Button
+                                            variant="contained"
+                                            sx={{
+                                                mt: 2,
+                                                bgcolor: "var(--color-primary)",
+                                                fontWeight: "bold",
+                                            }}
+                                            onClick={() =>
+                                                navigate(
+                                                    `/parkings/${parking.id}`
+                                                )
+                                            }
+                                        >
+                                            Ver detalles
+                                        </Button>
                                     </div>
                                 </Popup>
                             </Marker>

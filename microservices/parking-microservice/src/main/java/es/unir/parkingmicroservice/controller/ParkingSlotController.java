@@ -46,4 +46,13 @@ public class ParkingSlotController {
         parkingSlotService.deleteSlot(id);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
+
+    @GetMapping("/parking/{parkingId}")
+    public ResponseEntity<List<ParkingSlot>> getParkingSlotsByParkingId(@PathVariable String parkingId) {
+        List<ParkingSlot> slots = parkingSlotService.getParkingSlotsByParkingId(parkingId);
+        if (slots.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(slots);
+    }
 }
