@@ -1,9 +1,10 @@
 import { useContext, useEffect, useState, type JSX } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import type { ParkingSlotData } from "../types/parkingSlotData";
 import { LocationContext } from "../context/LocationContext";
 import Swal from "sweetalert2";
 import { fetchParkingsDetails } from "../utils/getParkingDetails";
+import { ArrowBack, Refresh } from "@mui/icons-material";
 
 export default function ParkingDetailsPage(): JSX.Element {
     const PARKINGS_MICROSERVICE_BASE_URL =
@@ -14,6 +15,28 @@ export default function ParkingDetailsPage(): JSX.Element {
     const [loading, setLoading] = useState<boolean>(true);
     const { isMobile } = useContext(LocationContext);
     const navigate = useNavigate();
+
+    const handleRefresh = async () => {
+        setLoading(true);
+        const data = await fetchParkingsDetails(
+            PARKINGS_MICROSERVICE_BASE_URL,
+            id || ""
+        );
+        setParkingInfo(data);
+        setLoading(false);
+        Swal.fire({
+            toast: true,
+            position: isMobile ? "top" : "top-end",
+            icon: "success",
+            title: "<strong>Datos actualizados</strong>",
+            text: "La información del parking se ha actualizado correctamente.",
+            showConfirmButton: false,
+            timer: 3000,
+            background: "#f0fdf4",
+            color: "#166534",
+            timerProgressBar: true,
+        });
+    };
 
     useEffect(() => {
         if (!id) {
@@ -49,20 +72,40 @@ export default function ParkingDetailsPage(): JSX.Element {
         fetchData();
     }, [id, navigate, isMobile, PARKINGS_MICROSERVICE_BASE_URL]);
 
-    if (loading) {
-        return (
-            <div className="flex items-center justify-center h-screen">
-                <div className="loader"></div>
-            </div>
-        );
-    }
-
     if (parkingInfo.length === 0) {
         return (
-            <div className="flex items-center justify-center h-screen">
-                <h1 className="text-2xl font-bold">
-                    No hay información disponible para este parking.
-                </h1>
+            <div className="mx-auto p-4 bg-primary h-screen">
+                <div className="flex items-center justify-between laptop:max-w-5xl laptop:mx-auto my-4">
+                    <div>
+                        <Link
+                            to="/"
+                            className="text-white text-lg font-bold flex items-center"
+                        >
+                            <ArrowBack fontSize="small" className="mr-1" />
+                            Volver al mapa
+                        </Link>
+                    </div>
+                    <div>
+                        <Refresh
+                            fontSize="large"
+                            className={`text-white cursor-pointer transition-transform duration-500 ${
+                                loading ? "animate-spin" : ""
+                            }`}
+                            onClick={handleRefresh}
+                        />
+                    </div>
+                </div>
+                <div>
+                    <div className="flex flex-col items-center justify-center h-96">
+                        <Refresh
+                            fontSize="large"
+                            className={`text-white animate-spin mb-4 ${
+                                parkingInfo.length === 0 ? "animate-spin" : ""
+                            }`}
+                        />
+                        <p className="text-white text-lg font-semibold">Cargando detalles del parking...</p>
+                    </div>
+                </div>
             </div>
         );
     }
@@ -71,7 +114,27 @@ export default function ParkingDetailsPage(): JSX.Element {
 
     return (
         <div className="mx-auto p-4 bg-primary">
-            <div className="max-w-7xl mx-auto">
+            <div className="flex items-center justify-between laptop:max-w-5xl laptop:mx-auto my-4">
+                <div>
+                    <Link
+                        to="/"
+                        className="text-white text-lg font-bold flex items-center"
+                    >
+                        <ArrowBack fontSize="small" className="mr-1" />
+                        Volver al mapa
+                    </Link>
+                </div>
+                <div>
+                    <Refresh
+                        fontSize="large"
+                        className={`text-white cursor-pointer transition-transform duration-500 ${
+                            loading ? "animate-spin" : ""
+                        }`}
+                        onClick={handleRefresh}
+                    />
+                </div>
+            </div>
+            <div className="max-w-5xl mx-auto ">
                 <h1 className="text-3xl font-bold mb-6 text-white">
                     Detalles del Parking: {parkingDetails.name}
                 </h1>
