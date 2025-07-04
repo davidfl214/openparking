@@ -1,9 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Menbere:wght@100..700&display=swap');
 @import "tailwindcss";
 
 @theme {
     --breakpoint-*: initial;
     --breakpoint-tablet: 40rem;
     --breakpoint-laptop: 64rem;
-    --color-primary: #F97315;
-    --color-secondary: #172CD6;
+    --color-primary: #1e2939;
+    --color-secondary: red;
+    --default-font-family: 'Menbere', sans-serif;
 }
