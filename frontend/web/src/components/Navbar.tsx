@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 import { LocationOn } from "@mui/icons-material";
 
 export default function Navbar(): JSX.Element {
-    const { setLatitudeSearch, setLongitudeSearch, isMobile } =
+    const { setLatitudeSearch, setLongitudeSearch } =
         useContext(LocationContext);
     const [locationSearch, setLocationSearch] = useState<string>("");
 
