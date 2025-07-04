@@ -31,7 +31,7 @@ public class ParkingSlot {
     private Integer slot;
 
     @Field("isOccupied")
-    private boolean isOccupied = false;
+    private boolean isOccupied;
 
     @Field("last_updated")
     private LocalDateTime lastUpdated;

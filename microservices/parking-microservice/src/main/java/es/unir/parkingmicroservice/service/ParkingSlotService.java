@@ -50,6 +50,38 @@ public class ParkingSlotService {
         return parkingSlotRepository.findByParkingId(parkingId);
     }
 
+    public List<ParkingSlot> getAllSlots() {
+        return parkingSlotRepository.findAll();
+    }
+
+    public Optional<ParkingSlot> getSlotById(String id) {
+        return parkingSlotRepository.findById(id);
+    }
+
+    public void createSlot(ParkingSlot slot) {
+        slot.setLastUpdated(LocalDateTime.now());
+        parkingSlotRepository.save(slot);
+    }
+
+    public Optional<ParkingSlot> updateSlot(String id, ParkingSlot updatedSlot) {
+        return parkingSlotRepository.findById(id).map(existing -> {
+            existing.setParking(updatedSlot.getParking());
+            existing.setFloor(updatedSlot.getFloor());
+            existing.setSlot(updatedSlot.getSlot());
+            existing.setOccupied(updatedSlot.isOccupied());
+            existing.setLastUpdated(LocalDateTime.now());
+            return parkingSlotRepository.save(existing);
+        });
+    }
+
+    public void deleteSlot(String id) {
+        if (parkingSlotRepository.existsById(id)) {
+            parkingSlotRepository.deleteById(id);
+        } else {
+            throw new IllegalArgumentException("Parking slot with id " + id + " does not exist");
+        }
+    }
+
     @Transactional
     public void updateSlotOccupancy(String parkingId, Integer floor, Integer slot, boolean isOccupied, LocalDateTime messageTimestamp) {
         try{
@@ -89,43 +121,6 @@ public class ParkingSlotService {
         } catch (Exception e) {
             throw e;
         }
-    }
-
-    @Override
-    public List<ParkingSlot> getAllSlots() {
-        return repository.findAll();
-    }
-
-    @Override
-    public Optional<ParkingSlot> getSlotById(String id) {
-        return repository.findById(id);
-    }
-
-    @Override
-    public ParkingSlot createSlot(ParkingSlot slot) {
-        slot.setLastUpdated(LocalDateTime.now());
-        return repository.save(slot);
-    }
-
-    @Override
-    public Optional<ParkingSlot> updateSlot(String id, ParkingSlot updatedSlot) {
-        return repository.findById(id).map(existing -> {
-            existing.setParking(updatedSlot.getParking());
-            existing.setFloor(updatedSlot.getFloor());
-            existing.setSlot(updatedSlot.getSlot());
-            existing.setIsOccupied(updatedSlot.isIsOccupied());
-            existing.setLastUpdated(LocalDateTime.now());
-            return repository.save(existing);
-        });
-    }
-
-    @Override
-    public boolean deleteSlot(String id) {
-        if (repository.existsById(id)) {
-            repository.deleteById(id);
-            return true;
-        }
-        return false;
     }
 
 }
