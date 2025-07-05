@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/parking-slots")
 @RequiredArgsConstructor
@@ -45,5 +46,14 @@ public class ParkingSlotController {
     public ResponseEntity<Void> delete(@PathVariable String id) {
         parkingSlotService.deleteSlot(id);
         return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @GetMapping("/parking/{parkingId}")
+    public ResponseEntity<List<ParkingSlot>> getParkingSlotsByParkingId(@PathVariable String parkingId) {
+        List<ParkingSlot> slots = parkingSlotService.getParkingSlotsByParkingId(parkingId);
+        if (slots.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(slots);
     }
 }

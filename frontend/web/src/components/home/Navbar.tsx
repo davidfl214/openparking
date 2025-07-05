@@ -1,13 +1,13 @@
 import { useContext, useState, type JSX } from "react";
-import { searchLocation } from "../utils/searchLocation";
-import { LocationContext } from "../context/LocationContext";
+import { searchLocation } from "../../utils/searchLocation";
+import { LocationContext } from "../../context/LocationContext";
 import { TextField } from "@mui/material";
 import PersonIcon from "@mui/icons-material/Person";
 import { Link } from "react-router-dom";
 import { LocationOn } from "@mui/icons-material";
 
 export default function Navbar(): JSX.Element {
-    const { setLatitudeSearch, setLongitudeSearch, isMobile } =
+    const { setLatitudeSearch, setLongitudeSearch } =
         useContext(LocationContext);
     const [locationSearch, setLocationSearch] = useState<string>("");
 
@@ -21,9 +21,9 @@ export default function Navbar(): JSX.Element {
     };
 
     return (
-        <nav className="bg-primary p-4 h-[15vh] flex items-center justify-center relative">
-            <div className="flex flex-col h-full justify-evenly w-full laptop:items-center gap-2 laptop:gap-1">
-                <div className="flex items-center justify-evenly w-full">
+        <nav className="bg-primary p-4 min-h-[18vh] tablet:min-h-[15vh] flex items-center justify-center relative">
+            <div className="flex flex-col h-full w-full items-center gap-4 laptop:gap-2">
+                <div className="flex items-center justify-between laptop:justify-evenly w-full max-w-md">
                     <div className="flex gap-2 items-center">
                         <LocationOn
                             className="text-secondary"
@@ -33,15 +33,16 @@ export default function Navbar(): JSX.Element {
                             OpenParking
                         </h1>
                     </div>
-                    {isMobile && (
-                        <Link to="/login" className="cursor-pointer p-1 border-white border-2 rounded-md transition-colors hover:bg-white/15">
-                            <PersonIcon
-                                fontSize="large"
-                                color="inherit"
-                                sx={{ color: "white" }}
-                            />
-                        </Link>
-                    )}
+                    <Link
+                        to="/login"
+                        className="cursor-pointer p-1 border-white border-2 rounded-md transition-colors hover:bg-white/15 laptop:hidden"
+                    >
+                        <PersonIcon
+                            fontSize="large"
+                            color="inherit"
+                            sx={{ color: "white" }}
+                        />
+                    </Link>
                 </div>
                 <div className="flex justify-center w-full">
                     <TextField
@@ -59,18 +60,16 @@ export default function Navbar(): JSX.Element {
                     />
                 </div>
             </div>
-            {!isMobile && (
-                <Link
-                    to="/login"
-                    className="absolute right-20 top-1/2 -translate-y-1/2 border-white border-2 rounded-md p-2 transition-colors cursor-pointer hover:bg-white/15"
-                >
-                    <PersonIcon
-                        fontSize="large"
-                        color="inherit"
-                        sx={{ color: "white" }}
-                    />
-                </Link>
-            )}
+            <Link
+                to="/login"
+                className="hidden laptop:block absolute right-20 top-1/2 -translate-y-1/2 border-white border-2 rounded-md p-2 transition-colors cursor-pointer hover:bg-white/15"
+            >
+                <PersonIcon
+                    fontSize="large"
+                    color="inherit"
+                    sx={{ color: "white" }}
+                />
+            </Link>
         </nav>
     );
 }

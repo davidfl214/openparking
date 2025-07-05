@@ -56,18 +56,23 @@ export default function Login() {
 
     return (
         <div className="w-screen h-screen flex flex-col items-center justify-center p-8 bg-primary">
-            <div className="absolute top-6 left-8">
+            <div className="absolute top-4 left-4 laptop:top-6 laptop:left-8">
                 <Link
                     to="/"
                     className="text-white text-lg font-bold mb-4 flex items-center"
                 >
-                    <ArrowBack fontSize="small" className="mr-1"/>
+                    <ArrowBack fontSize="small" className="mr-1" />
                     Volver al mapa
                 </Link>
             </div>
             <div className="flex items-center mb-8 gap-2">
-                <LocationOn className="text-secondary" sx={{ fontSize: { xs: 50, sm: 60 } }} />
-                <h1 className="font-bold text-white text-4xl laptop:text-5xl">OpenParking</h1>
+                <LocationOn
+                    className="text-secondary"
+                    sx={{ fontSize: { xs: 50, sm: 60 } }}
+                />
+                <h1 className="font-bold text-white text-4xl laptop:text-5xl">
+                    OpenParking
+                </h1>
             </div>
 
             <form
