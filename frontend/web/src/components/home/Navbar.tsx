@@ -1,6 +1,6 @@
 import { useContext, useState, type JSX } from "react";
-import { searchLocation } from "../utils/searchLocation";
-import { LocationContext } from "../context/LocationContext";
+import { searchLocation } from "../../utils/searchLocation";
+import { LocationContext } from "../../context/LocationContext";
 import { TextField } from "@mui/material";
 import PersonIcon from "@mui/icons-material/Person";
 import { Link } from "react-router-dom";

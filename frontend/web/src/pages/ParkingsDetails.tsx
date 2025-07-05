@@ -5,6 +5,7 @@ import { LocationContext } from "../context/LocationContext";
 import Swal from "sweetalert2";
 import { fetchParkingsDetails } from "../utils/getParkingDetails";
 import { ArrowBack, Refresh } from "@mui/icons-material";
+import ParkingDetailsBox from "../components/parking-details/ParkingDetailsBox";
 
 export default function ParkingDetailsPage(): JSX.Element {
     const PARKINGS_MICROSERVICE_BASE_URL =
@@ -13,17 +14,18 @@ export default function ParkingDetailsPage(): JSX.Element {
     const { id } = useParams<{ id: string }>();
     const [parkingInfo, setParkingInfo] = useState<ParkingSlotData[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
+    const [refreshClicked, setRefreshClicked] = useState<boolean>(false);
     const { isMobile } = useContext(LocationContext);
     const navigate = useNavigate();
 
     const handleRefresh = async () => {
-        setLoading(true);
+        setRefreshClicked(true);
         const data = await fetchParkingsDetails(
             PARKINGS_MICROSERVICE_BASE_URL,
             id || ""
         );
         setParkingInfo(data);
-        setLoading(false);
+        setRefreshClicked(false);
         Swal.fire({
             toast: true,
             position: isMobile ? "top" : "top-end",
@@ -89,7 +91,7 @@ export default function ParkingDetailsPage(): JSX.Element {
                         <Refresh
                             fontSize="large"
                             className={`text-white cursor-pointer transition-transform duration-500 ${
-                                loading ? "animate-spin" : ""
+                                refreshClicked ? "animate-spin" : ""
                             }`}
                             onClick={handleRefresh}
                         />
@@ -103,7 +105,9 @@ export default function ParkingDetailsPage(): JSX.Element {
                                 parkingInfo.length === 0 ? "animate-spin" : ""
                             }`}
                         />
-                        <p className="text-white text-lg font-semibold">Cargando detalles del parking...</p>
+                        <p className="text-white text-lg font-semibold">
+                            Cargando detalles del parking...
+                        </p>
                     </div>
                 </div>
             </div>
@@ -111,6 +115,13 @@ export default function ParkingDetailsPage(): JSX.Element {
     }
 
     const parkingDetails = parkingInfo[0].parking;
+
+    const sortedParkingInfo = [...parkingInfo].sort((a, b) => {
+        if (a.floor !== b.floor) {
+            return a.floor - b.floor;
+        }
+        return a.slot - b.slot;
+    });
 
     return (
         <div className="mx-auto p-4 bg-primary">
@@ -146,40 +157,11 @@ export default function ParkingDetailsPage(): JSX.Element {
                     Estado de las Plazas
                 </h2>
                 <div className="grid grid-cols-2 laptop:grid-cols-3 gap-4">
-                    {parkingInfo.map((slotData) => (
-                        <div
+                    {sortedParkingInfo.map((slotData) => (
+                        <ParkingDetailsBox
                             key={slotData.id}
-                            className={`p-4 rounded-lg shadow-md ${
-                                slotData.occupied
-                                    ? "bg-red-100 border border-red-400"
-                                    : "bg-green-100 border border-green-400"
-                            }`}
-                        >
-                            <p className="text-lg font-medium">
-                                Planta: {slotData.floor}
-                            </p>
-                            <p className="text-lg font-medium">
-                                Plaza: {slotData.slot}
-                            </p>
-                            <p className="text-md">
-                                Estado:{" "}
-                                <span
-                                    className={`font-semibold ${
-                                        slotData.occupied
-                                            ? "text-red-700"
-                                            : "text-green-700"
-                                    }`}
-                                >
-                                    {slotData.occupied ? "Ocupada" : "Libre"}
-                                </span>
-                            </p>
-                            <p className="text-sm text-gray-500">
-                                Última actualización:{" "}
-                                {new Date(
-                                    slotData.lastUpdated
-                                ).toLocaleString()}
-                            </p>
-                        </div>
+                            parking={slotData}
+                        />
                     ))}
                 </div>
             </div>

@@ -1,20 +1,23 @@
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import { useGeolocation } from "../hooks/useGeolocation";
+import { useGeolocation } from "../../hooks/useGeolocation";
 import { useContext, useEffect, useRef, useState, type JSX } from "react";
 import { type LatLngTuple } from "leaflet";
 import Swal from "sweetalert2";
-import type { ParkingData } from "../types/parking";
-import { fetchParkings } from "../utils/getParkingData";
-import { createStyledMarker, getMarkerColorClass } from "../utils/markerStyles";
+import type { ParkingData } from "../../types/parking";
+import { fetchParkings } from "../../utils/getParkingData";
+import {
+    createStyledMarker,
+    getMarkerColorClass,
+} from "../../utils/markerStyles";
 import {
     MarkerLocationClickHandler,
     SearchLocationHandler,
     UserLocationHandler,
-} from "../utils/locationHandler";
+} from "../../utils/locationHandler";
 import { Stomp, type Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
-import { LocationContext } from "../context/LocationContext";
+import { LocationContext } from "../../context/LocationContext";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@mui/material";
 
