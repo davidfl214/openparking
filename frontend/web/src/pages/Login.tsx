@@ -3,7 +3,7 @@ import { TextField, Button } from "@mui/material";
 import Swal from "sweetalert2";
 import { LocationContext } from "../context/LocationContext";
 import { ArrowBack, LocationOn } from "@mui/icons-material";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Login() {
     const AUTH_MICROSERVICE_BASE_URL =
@@ -13,6 +13,8 @@ export default function Login() {
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+
+    const navigate = useNavigate();
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -38,6 +40,20 @@ export default function Login() {
             const { token } = await res.json();
 
             localStorage.setItem("jwt", token);
+            console.log("Token guardado:", token);
+            Swal.fire({
+                toast: true,
+                position: isMobile ? "top" : "top-end",
+                icon: "success",
+                title: "<strong>Inicio de sesión exitoso</strong>",
+                text: "Bienvenido de nuevo",
+                showConfirmButton: false,
+                timer: 3000,
+                background: "#f0fdf4",
+                color: "#166534",
+                timerProgressBar: true,
+            });
+            navigate("/");
         } catch (err: any) {
             Swal.fire({
                 toast: true,
