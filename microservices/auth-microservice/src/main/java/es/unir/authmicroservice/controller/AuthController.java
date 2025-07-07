@@ -1,0 +1,35 @@
+package es.unir.authmicroservice.controller;
+
+import es.unir.authmicroservice.dto.AuthResponse;
+import es.unir.authmicroservice.dto.LoginRequest;
+import es.unir.authmicroservice.dto.RegisterRequest;
+import es.unir.authmicroservice.model.Role;
+import es.unir.authmicroservice.service.AuthService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.sql.Timestamp;
+import java.util.Map;
+
+
+@RestController
+@RequestMapping("/api/auth")
+@RequiredArgsConstructor
+public class AuthController {
+
+    private final AuthService authService;
+
+    @PostMapping("/register")
+    public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request) {
+
+        return ResponseEntity.ok(authService.register(request));
+
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
+        return ResponseEntity.ok(authService.login(request));
+    }
+
+}

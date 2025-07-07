@@ -1,22 +1,13 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router";
-import Login from "./pages/AdminLogin";
-/*
-import AdminDashboard from "./pages/AdminDashboard";
-*/
-import AdminLoginPrueba from "./pages/AdminLoginPrueba.tsx";
+import { DataContext } from "./context/DataContext.ts";
+import GlobalRouter from "./routes/GlobalRouter.tsx";
 
 function App() {
-    return (
-        <Router>
-            <Routes>
-                <Route path="/" element={<Login />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/admin-home" element={<AdminLoginPrueba />} />
+    const isMobile = window.innerWidth <= 640;
 
-                {/* Rutas no encontradas */}
-                <Route path="*" element={<h2>404 - Página no encontrada</h2>} />
-            </Routes>
-        </Router>
+    return (
+        <DataContext.Provider value={{ isMobile }}>
+            <GlobalRouter />
+        </DataContext.Provider>
     );
 }
 

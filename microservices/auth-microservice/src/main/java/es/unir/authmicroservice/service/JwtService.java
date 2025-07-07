@@ -1,6 +1,8 @@
-package org.example.openparkingbackendauth.service;
+package es.unir.authmicroservice.service;
 
-import org.example.openparkingbackendauth.model.User;
+import es.unir.authmicroservice.model.User;
+import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -8,13 +10,23 @@ import io.jsonwebtoken.security.Keys;
 
 
 import java.security.Key;
+import java.util.Base64;
 import java.util.Date;
 
 @Service
 public class JwtService {
 
-    private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-    private final long expiration = 1000 * 60 * 60 * 24; // 24 horas
+    @Value("${jwt.secret}")
+    private String secretKey;
+
+    private Key key;
+    private final long expiration = 1000 * 60 * 60 * 24;
+
+    @PostConstruct
+    public void init() {
+        byte[] decodedKey = Base64.getDecoder().decode(secretKey);
+        this.key = Keys.hmacShaKeyFor(decodedKey);
+    }
 
     public String generateToken(User user) {
         return Jwts.builder()
