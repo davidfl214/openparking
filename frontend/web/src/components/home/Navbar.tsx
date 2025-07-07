@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 import { LocationOn } from "@mui/icons-material";
 
 export default function Navbar(): JSX.Element {
-    const { setLatitudeSearch, setLongitudeSearch } =
+    const { setLatitudeSearch, setLongitudeSearch, authResponse } =
         useContext(LocationContext);
     const [locationSearch, setLocationSearch] = useState<string>("");
 
@@ -29,20 +29,38 @@ export default function Navbar(): JSX.Element {
                             className="text-secondary"
                             sx={{ fontSize: 35 }}
                         />
-                        <h1 className="text-white text-3xl font-bold mb-2">
+                        <h1 className="text-white text-2xl font-bold mb-2 laptop:text-3xl">
                             OpenParking
                         </h1>
                     </div>
-                    <Link
-                        to="/login"
-                        className="cursor-pointer p-1 border-white border-2 rounded-md transition-colors hover:bg-white/15 laptop:hidden"
-                    >
-                        <PersonIcon
-                            fontSize="large"
-                            color="inherit"
-                            sx={{ color: "white" }}
-                        />
-                    </Link>
+                    {authResponse?.name ? (
+                        <div className="flex items-center gap-4 laptop:hidden">
+                            <span className="text-white">
+                                Hola, {authResponse.name}
+                            </span>
+                            <Link
+                                to="/profile"
+                                className="cursor-pointer p-1 border-white border-2 rounded-md transition-colors hover:bg-white/15"
+                            >
+                                <PersonIcon
+                                    fontSize="large"
+                                    color="inherit"
+                                    sx={{ color: "white" }}
+                                />
+                            </Link>
+                        </div>
+                    ) : (
+                        <Link
+                            to="/login"
+                            className="cursor-pointer p-1 border-white border-2 rounded-md transition-colors hover:bg-white/15 laptop:hidden"
+                        >
+                            <PersonIcon
+                                fontSize="large"
+                                color="inherit"
+                                sx={{ color: "white" }}
+                            />
+                        </Link>
+                    )}
                 </div>
                 <div className="flex justify-center w-full">
                     <TextField
@@ -60,16 +78,34 @@ export default function Navbar(): JSX.Element {
                     />
                 </div>
             </div>
-            <Link
-                to="/login"
-                className="hidden laptop:block absolute right-20 top-1/2 -translate-y-1/2 border-white border-2 rounded-md p-2 transition-colors cursor-pointer hover:bg-white/15"
-            >
-                <PersonIcon
-                    fontSize="large"
-                    color="inherit"
-                    sx={{ color: "white" }}
-                />
-            </Link>
+            {authResponse?.name ? (
+                <div className="hidden laptop:flex absolute right-20 top-1/2 -translate-y-1/2 items-center gap-4">
+                    <span className="text-white text-xl">
+                        Hola, {authResponse.name}
+                    </span>
+                    <Link
+                        to="/profile"
+                        className="border-white border-2 rounded-md p-2 transition-colors cursor-pointer hover:bg-white/15"
+                    >
+                        <PersonIcon
+                            fontSize="large"
+                            color="inherit"
+                            sx={{ color: "white" }}
+                        />
+                    </Link>
+                </div>
+            ) : (
+                <Link
+                    to="/login"
+                    className="hidden laptop:block absolute right-20 top-1/2 -translate-y-1/2 border-white border-2 rounded-md p-2 transition-colors cursor-pointer hover:bg-white/15"
+                >
+                    <PersonIcon
+                        fontSize="large"
+                        color="inherit"
+                        sx={{ color: "white" }}
+                    />
+                </Link>
+            )}
         </nav>
     );
 }

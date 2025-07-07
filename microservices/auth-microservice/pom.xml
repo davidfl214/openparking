@@ -8,7 +8,7 @@
         <version>3.5.0</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>org.example</groupId>
+    <groupId>es.unir</groupId>
     <artifactId>OpenParkingBackEndAuth</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>OpenParkingBackEndAuth</name>

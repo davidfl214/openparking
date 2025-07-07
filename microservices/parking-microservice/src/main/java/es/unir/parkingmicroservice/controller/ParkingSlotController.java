@@ -5,11 +5,11 @@ import es.unir.parkingmicroservice.service.ParkingSlotService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/parking-slots")
 @RequiredArgsConstructor
@@ -36,6 +36,7 @@ public class ParkingSlotController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<ParkingSlot> updateParkingSlot(@PathVariable String id, @RequestBody ParkingSlot slot) {
         return parkingSlotService.updateSlot(id, slot)
                 .map(ResponseEntity::ok)
@@ -43,6 +44,7 @@ public class ParkingSlotController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable String id) {
         parkingSlotService.deleteSlot(id);
         return ResponseEntity.status(HttpStatus.OK).build();

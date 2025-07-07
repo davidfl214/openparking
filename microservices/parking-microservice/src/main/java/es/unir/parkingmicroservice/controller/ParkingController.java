@@ -8,11 +8,11 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping(path = "/parkings")
 @RequiredArgsConstructor
@@ -26,12 +26,14 @@ public class ParkingController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Void> createParking(@Valid @RequestBody ParkingDTO newParking) {
         parkingService.createParking(newParking);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Void> deleteParking(@PathVariable("id") String id) {
         parkingService.deleteParking(id);
         return ResponseEntity.status(HttpStatus.OK).build();
