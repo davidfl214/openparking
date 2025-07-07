@@ -61,5 +61,10 @@ public class AuthService {
 
         return jwtService.generateToken(user);
     }
+
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email).orElse(null);
+    }
+
 }
 

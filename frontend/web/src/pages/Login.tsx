@@ -39,7 +39,7 @@ export default function Login() {
 
             const { token } = await res.json();
 
-            localStorage.setItem("jwt", token);
+            document.cookie = `jwt=${token}; path=/; max-age=86400; secure; samesite=Strict`;
             console.log("Token guardado:", token);
             Swal.fire({
                 toast: true,

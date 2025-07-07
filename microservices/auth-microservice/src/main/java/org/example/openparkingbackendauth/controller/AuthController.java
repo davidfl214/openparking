@@ -2,6 +2,7 @@ package org.example.openparkingbackendauth.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.example.openparkingbackendauth.model.Role;
+import org.example.openparkingbackendauth.model.User;
 import org.example.openparkingbackendauth.service.AuthService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -45,4 +46,5 @@ public class AuthController {
                 "token", token, "role", Role.USER.name(), "email", email, "name", name
         ));
     }
+
 }

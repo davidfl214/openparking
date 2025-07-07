@@ -48,21 +48,21 @@ export default function Register() {
 
             // ✅ Si hay token, lo guardamos y redirigimos
             if (data.token) {
-                localStorage.setItem("jwt", data.token);
+                document.cookie = `jwt=${data.token}; path=/; max-age=86400; secure; samesite=Strict`;
                 console.log("Token guardado:", data.token);
                 Swal.fire({
                     toast: true,
                     position: isMobile ? "top" : "top-end",
                     icon: "success",
                     title: "<strong>Registro exitoso</strong>",
-                    text: "Usuario registrado correctamente. Ahora puedes iniciar sesión.",
+                    text: "Usuario registrado correctamente.",
                     showConfirmButton: false,
                     timer: 3000,
                     background: "#f0fdf4",
                     color: "#166534",
                     timerProgressBar: true,
                 });console.log("Registro exitoso:", data);
-                console.log("Redirigiendo a la página de inicio de sesión...")
+                console.log("Redirigiendo a la página principal...")
                 // Redirigir a la página de inicio de sesión
                 navigate("/");
             } else {
@@ -79,6 +79,7 @@ export default function Register() {
                     timerProgressBar: true,
                 });
                 console.log("Registro exitoso, pero no se recibió token:", data);
+                navigate("/login");
             }
         } catch (err: any) {
             Swal.fire({
