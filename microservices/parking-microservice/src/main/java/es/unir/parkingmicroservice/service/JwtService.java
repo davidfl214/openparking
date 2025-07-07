@@ -19,9 +19,6 @@ public class JwtService {
     @Value("${jwt.secret}")
     private String secretKey;
 
-    @Value("${auth.microservice.url")
-    private String authMicroserviceUrl;
-
     private Key key;
 
     @PostConstruct
@@ -33,7 +30,6 @@ public class JwtService {
     private Claims extractAllClaims(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(key)
-                .requireIssuer(authMicroserviceUrl)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
