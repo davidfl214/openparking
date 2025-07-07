@@ -2,6 +2,7 @@ package es.unir.authmicroservice.service;
 
 import es.unir.authmicroservice.dto.AuthResponse;
 import es.unir.authmicroservice.dto.LoginRequest;
+import es.unir.authmicroservice.dto.LoginResult;
 import es.unir.authmicroservice.dto.RegisterRequest;
 import lombok.RequiredArgsConstructor;
 import es.unir.authmicroservice.model.Role;
@@ -39,14 +40,13 @@ public class AuthService {
         String token = jwtService.generateToken(newUser);
 
         return AuthResponse.builder()
-                .token(token)
                 .role(newUser.getRole())
                 .email(newUser.getEmail())
                 .name(newUser.getName())
                 .build();
     }
 
-    public AuthResponse login(LoginRequest request) {
+    public LoginResult login(LoginRequest request) {
 
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
@@ -57,7 +57,7 @@ public class AuthService {
 
         String token = jwtService.generateToken(user);
 
-        return AuthResponse.builder()
+        return LoginResult.builder()
                 .token(token)
                 .role(user.getRole())
                 .email(user.getEmail())

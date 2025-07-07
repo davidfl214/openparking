@@ -6,11 +6,13 @@ import lombok.Data;
 
 @Data
 @Builder
-public class AuthResponse {
+public class LoginResult {
 
-    private Role role;
+    private String token;
 
     private String email;
 
     private String name;
+
+    private Role role;
 }

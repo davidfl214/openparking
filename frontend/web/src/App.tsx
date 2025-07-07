@@ -3,16 +3,18 @@ import "./App.css";
 import { LocationContext } from "./context/LocationContext";
 import type { ParkingData } from "./types/parking";
 import GlobalRouter from "./routes/GlobalRouter";
+import { getStoredAuthResponse } from "./utils/getStoredAuthResponse";
 
 function App() {
 
     const [latitudeSearch, setLatitudeSearch] = useState<number | null>(null);
     const [longitudeSearch, setLongitudeSearch] = useState<number | null>(null);
     const [parkingData, setParkingData] = useState<ParkingData[]>([]);
+    const authResponse = getStoredAuthResponse();
     const isMobile = window.innerWidth <= 640;
 
     return (
-        <LocationContext.Provider value={{ latitudeSearch, longitudeSearch, parkingData, isMobile, setLatitudeSearch, setLongitudeSearch, setParkingData }}>
+        <LocationContext.Provider value={{ latitudeSearch, longitudeSearch, parkingData, isMobile, authResponse, setLatitudeSearch, setLongitudeSearch, setParkingData }}>
             <GlobalRouter />
         </LocationContext.Provider>
     );
