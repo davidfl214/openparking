@@ -23,7 +23,6 @@ public class JwtService {
     private String authMicroserviceUrl;
 
     private Key key;
-    private final long expiration = 1000 * 60 * 60 * 24;
 
     @PostConstruct
     public void init() {
@@ -38,6 +37,10 @@ public class JwtService {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
+    }
+
+    public String extractUserRole(String token) {
+        return extractAllClaims(token).get("role", String.class);
     }
 
     public String extractUserEmail(String token) {
