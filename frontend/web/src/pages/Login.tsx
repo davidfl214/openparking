@@ -3,7 +3,8 @@ import { TextField, Button } from "@mui/material";
 import Swal from "sweetalert2";
 import { LocationContext } from "../context/LocationContext";
 import { ArrowBack, LocationOn } from "@mui/icons-material";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import type { AuthResponse } from "../types/authResponse";
 
 export default function Login() {
     const AUTH_MICROSERVICE_BASE_URL =
@@ -13,6 +14,8 @@ export default function Login() {
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+
+    const navigate = useNavigate();
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -25,6 +28,7 @@ export default function Login() {
                         "Content-Type": "application/json",
                     },
                     body: JSON.stringify({ email, password }),
+                    credentials: "include",
                 }
             );
 
@@ -35,9 +39,31 @@ export default function Login() {
                 );
             }
 
-            const { token } = await res.json();
+            const response: AuthResponse = await res.json();
 
-            localStorage.setItem("jwt", token);
+            localStorage.setItem("userRole", response.role || "");
+            localStorage.setItem("userEmail", response.email || "");
+            localStorage.setItem("userName", response.name || "");
+
+            const expirationTime = 24 * 60 * 60 * 1000
+            localStorage.setItem(
+                "expiration",
+                (Date.now() + expirationTime).toString()
+            );
+
+            Swal.fire({
+                toast: true,
+                position: isMobile ? "top" : "top-end",
+                icon: "success",
+                title: "<strong>Inicio de sesión exitoso</strong>",
+                text: "Bienvenido de nuevo",
+                showConfirmButton: false,
+                timer: 3000,
+                background: "#f0fdf4",
+                color: "#166534",
+                timerProgressBar: true,
+            });
+            navigate("/");
         } catch (err: any) {
             Swal.fire({
                 toast: true,

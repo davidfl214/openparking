@@ -1,5 +1,4 @@
-import { useEffect, useState } from 'react';
-import axios from 'axios';
+import { useContext, useEffect, useState } from 'react';
 import {
     Container, Typography, Table, TableBody, TableCell, TableContainer,
     TableHead, TableRow, Paper, Button, Dialog, DialogActions,
@@ -7,8 +6,10 @@ import {
     IconButton, Menu, MenuItem
 } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { DataContext } from '../context/DataContext';
 
-const API_URL = 'http://localhost:8080/slots';
+const PARKING_MICROSERVICE_BASE_URL =
+    import.meta.env.VITE_PARKING_MICROSERVICE_URL || "http://localhost:8080";
 
 function SlotList({ useMock = true }) {
     const [slots, setSlots] = useState([]);
@@ -22,6 +23,7 @@ function SlotList({ useMock = true }) {
         slot: '',
         isOccupied: false
     });
+    const { isMobile } = useContext(DataContext);
 
     const mockData = [
         {
@@ -44,10 +46,27 @@ function SlotList({ useMock = true }) {
 
     const fetchSlots = async () => {
         try {
-            const res = await axios.get(API_URL);
-            setSlots(res.data);
-        } catch (error) {
-            console.error("Error fetching slots:", error);
+            const res = await fetch(
+                `${PARKING_MICROSERVICE_BASE_URL}/parking-slots`
+            );
+            if (!res.ok) {
+                throw new Error(res.statusText || "Error mientras se obtenían los parkings");
+            }
+            const data = await res.json();
+            setSlots(data);
+        } catch (err: any) {
+            Swal.fire({
+                toast: true,
+                position: isMobile ? "top" : "top-end",
+                icon: "error",
+                title: "<strong>Algo ha fallado</strong>",
+                text: err.message || null,
+                showConfirmButton: false,
+                timer: 3000,
+                background: "#fef2f2",
+                color: "#991b1b",
+                timerProgressBar: true,
+            });
         }
     };
 
