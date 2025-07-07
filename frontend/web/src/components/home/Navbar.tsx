@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 import { LocationOn } from "@mui/icons-material";
 
 export default function Navbar(): JSX.Element {
-    const { setLatitudeSearch, setLongitudeSearch } =
+    const { setLatitudeSearch, setLongitudeSearch, authResponse } =
         useContext(LocationContext);
     const [locationSearch, setLocationSearch] = useState<string>("");
 
@@ -60,16 +60,30 @@ export default function Navbar(): JSX.Element {
                     />
                 </div>
             </div>
-            <Link
-                to="/login"
-                className="hidden laptop:block absolute right-20 top-1/2 -translate-y-1/2 border-white border-2 rounded-md p-2 transition-colors cursor-pointer hover:bg-white/15"
-            >
-                <PersonIcon
-                    fontSize="large"
-                    color="inherit"
-                    sx={{ color: "white" }}
-                />
-            </Link>
+            {authResponse?.name ? (
+                <Link
+                    to="/profile"
+                    className="hidden laptop:block absolute right-20 top-1/2 -translate-y-1/2 border-white border-2 rounded-md p-2 transition-colors cursor-pointer hover:bg-white/15"
+                >
+                    Hola, {authResponse.name}!
+                    <PersonIcon
+                        fontSize="large"
+                        color="inherit"
+                        sx={{ color: "white" }}
+                    />
+                </Link>
+            ) : (
+                <Link
+                    to="/login"
+                    className="hidden laptop:block absolute right-20 top-1/2 -translate-y-1/2 border-white border-2 rounded-md p-2 transition-colors cursor-pointer hover:bg-white/15"
+                >
+                    <PersonIcon
+                        fontSize="large"
+                        color="inherit"
+                        sx={{ color: "white" }}
+                    />
+                </Link>
+            )}
         </nav>
     );
 }
