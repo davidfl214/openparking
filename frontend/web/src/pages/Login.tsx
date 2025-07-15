@@ -10,7 +10,7 @@ export default function Login() {
     const AUTH_MICROSERVICE_BASE_URL =
         import.meta.env.VITE_AUTH_MICROSERVICE_URL || "http://localhost:8080";
 
-    const { isMobile } = useContext(LocationContext);
+    const { isMobile, setAuthResponse } = useContext(LocationContext);
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -51,6 +51,8 @@ export default function Login() {
                 "expiration",
                 (Date.now() + expirationTime).toString()
             );
+
+            setAuthResponse(response);
 
             Swal.fire({
                 toast: true,
