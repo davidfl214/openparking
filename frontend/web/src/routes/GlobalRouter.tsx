@@ -3,6 +3,7 @@ import Landing from "../pages/Landing";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
 import ParkingDetailsPage from "../pages/ParkingsDetails";
+import Profile from "../pages/Profile";
 
 export default function GlobalRouter() {
     return (
@@ -12,6 +13,7 @@ export default function GlobalRouter() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/parkings/:id" element={<ParkingDetailsPage />} />
+                <Route path="/profile" element={<Profile />} />
             </Routes>
         </BrowserRouter>
     )

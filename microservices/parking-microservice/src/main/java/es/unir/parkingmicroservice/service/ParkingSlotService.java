@@ -25,12 +25,8 @@ public class ParkingSlotService {
         List<ParkingSlot> parkingSlots = new ArrayList<>();
         for (int floor = 1; floor <= parking.getNumberOfFloors(); floor++) {
             for (int slot = 1; slot <= parking.getSlotsPerFloor(); slot++) {
-                ParkingSlot parkingSlot = ParkingSlot.builder()
-                        .parking(parking)
-                        .floor(floor)
-                        .slot(slot)
-                        .isOccupied(false)
-                        .build();
+                ParkingSlot parkingSlot =
+                        ParkingSlot.builder().parking(parking).floor(floor).slot(slot).isOccupied(false).build();
                 parkingSlots.add(parkingSlot);
             }
         }
@@ -83,9 +79,11 @@ public class ParkingSlotService {
     }
 
     @Transactional
-    public void updateSlotOccupancy(String parkingId, Integer floor, Integer slot, boolean isOccupied, LocalDateTime messageTimestamp) {
-        try{
-            Optional<ParkingSlot> slotOptional = parkingSlotRepository.findByParkingIdAndFloorAndSlot(parkingId, floor, slot);
+    public void updateSlotOccupancy(String parkingId, Integer floor, Integer slot, boolean isOccupied,
+                                    LocalDateTime messageTimestamp) {
+        try {
+            Optional<ParkingSlot> slotOptional =
+                    parkingSlotRepository.findByParkingIdAndFloorAndSlot(parkingId, floor, slot);
             if (slotOptional.isPresent()) {
                 ParkingSlot parkingSlot = slotOptional.get();
 
@@ -101,22 +99,18 @@ public class ParkingSlotService {
                 if (associatedParking != null) {
                     List<ParkingSlot> parkingSlots = getParkingSlotsByParkingId(associatedParking.getId());
                     int occupiedSlots = (int) parkingSlots.stream().filter(ParkingSlot::isOccupied).count();
-                    ParkingSlotStatus updatedStatus = ParkingSlotStatus.builder()
-                            .id(associatedParking.getId())
-                            .name(associatedParking.getName())
-                            .location(associatedParking.getLocation())
-                            .latitude(associatedParking.getLatitude())
-                            .longitude(associatedParking.getLongitude())
-                            .totalSlots(parkingSlots.size())
-                            .occupiedSlots(occupiedSlots)
-                            .enabled(associatedParking.isEnabled())
-                            .build();
+                    ParkingSlotStatus updatedStatus =
+                            ParkingSlotStatus.builder().id(associatedParking.getId()).name(associatedParking.getName())
+                                    .location(associatedParking.getLocation()).latitude(associatedParking.getLatitude())
+                                    .longitude(associatedParking.getLongitude()).totalSlots(parkingSlots.size())
+                                    .occupiedSlots(occupiedSlots).enabled(associatedParking.isEnabled()).build();
 
                     messagingTemplate.convertAndSend("/topic/parkingStatus", updatedStatus);
                 }
 
             } else {
-                throw new IllegalArgumentException("Parking slot not found for parkingId: " + parkingId + ", floor: " + floor + ", slot: " + slot);
+                throw new IllegalArgumentException(
+                        "Parking slot not found for parkingId: " + parkingId + ", floor: " + floor + ", slot: " + slot);
             }
         } catch (Exception e) {
             throw e;

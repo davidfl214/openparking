@@ -43,4 +43,10 @@ public class ParkingController {
     public ResponseEntity<List<ParkingSlotStatus>> getAllParkingStatus() {
         return ResponseEntity.ok(parkingService.getAllParkingStatus());
     }
+
+    @GetMapping("/{id}/status")
+    public ResponseEntity<ParkingSlotStatus> getParkingStatus(@PathVariable("id") String id) {
+        ParkingSlotStatus status = parkingService.getParkingStatus(id);
+        return ResponseEntity.ok(status);
+    }
 }

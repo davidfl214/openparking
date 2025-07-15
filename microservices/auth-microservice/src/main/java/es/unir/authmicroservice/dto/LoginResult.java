@@ -4,6 +4,8 @@ import es.unir.authmicroservice.model.Role;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.Set;
+
 @Data
 @Builder
 public class LoginResult {
@@ -15,4 +17,6 @@ public class LoginResult {
     private String name;
 
     private Role role;
+
+    private Set<String> favouritesParkings;
 }

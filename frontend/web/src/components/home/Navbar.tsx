@@ -34,9 +34,9 @@ export default function Navbar(): JSX.Element {
                         </h1>
                     </div>
                     {authResponse?.name ? (
-                        <div className="flex items-center gap-4 laptop:hidden">
+                        <div className="flex items-center gap-2 laptop:gap-4 laptop:hidden">
                             <span className="text-white">
-                                Hola, {authResponse.name}
+                                <span className="hidden laptop:inline">Hola, </span>{authResponse.name}
                             </span>
                             <Link
                                 to="/profile"

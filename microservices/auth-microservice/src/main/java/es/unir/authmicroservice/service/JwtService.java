@@ -29,22 +29,12 @@ public class JwtService {
     }
 
     public String generateToken(User user) {
-        return Jwts.builder()
-                .setSubject(user.getEmail())
-                .claim("role", user.getRole().name())
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + expiration))
-                .signWith(key)
-                .compact();
+        return Jwts.builder().setSubject(user.getEmail()).claim("role", user.getRole().name()).setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + expiration)).signWith(key).compact();
     }
 
     public String extractUsername(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
+        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().getSubject();
     }
 
     public boolean isTokenValid(String token, User user) {
@@ -53,12 +43,7 @@ public class JwtService {
     }
 
     private boolean isTokenExpired(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .getExpiration()
+        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().getExpiration()
                 .before(new Date());
     }
 }

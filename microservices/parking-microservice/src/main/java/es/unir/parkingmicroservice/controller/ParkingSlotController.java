@@ -24,9 +24,7 @@ public class ParkingSlotController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ParkingSlot> getParkingSlotById(@PathVariable String id) {
-        return parkingSlotService.getSlotById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return parkingSlotService.getSlotById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
@@ -38,8 +36,7 @@ public class ParkingSlotController {
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<ParkingSlot> updateParkingSlot(@PathVariable String id, @RequestBody ParkingSlot slot) {
-        return parkingSlotService.updateSlot(id, slot)
-                .map(ResponseEntity::ok)
+        return parkingSlotService.updateSlot(id, slot).map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 

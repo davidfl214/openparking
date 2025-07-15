@@ -9,6 +9,6 @@ import java.util.Optional;
 public interface ParkingSlotRepository extends MongoRepository<ParkingSlot, String> {
 
     List<ParkingSlot> findByParkingId(String parkingId);
+
     Optional<ParkingSlot> findByParkingIdAndFloorAndSlot(String parkingId, Integer floor, Integer slot);
-    List<ParkingSlot> findByIsOccupied(boolean isOccupied);
 }

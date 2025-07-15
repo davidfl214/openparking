@@ -47,20 +47,15 @@ public class ParkingService {
 
         parkingSlotService.generateInitialParkingSlots(savedParking);
 
-        sendParkingConfigurationEvent(savedParking.getId(), savedParking.getNumberOfFloors(), savedParking.getSlotsPerFloor(), ADD_PARKING_TYPE);
+        sendParkingConfigurationEvent(savedParking.getId(), savedParking.getNumberOfFloors(),
+                savedParking.getSlotsPerFloor(), ADD_PARKING_TYPE);
 
         List<ParkingSlot> parkingSlots = parkingSlotService.getParkingSlotsByParkingId(savedParking.getId());
         int occupiedSlots = (int) parkingSlots.stream().filter(ParkingSlot::isOccupied).count();
-        ParkingSlotStatus status = ParkingSlotStatus.builder()
-                .id(savedParking.getId())
-                .name(savedParking.getName())
-                .location(savedParking.getLocation())
-                .latitude(savedParking.getLatitude())
-                .longitude(savedParking.getLongitude())
-                .totalSlots(parkingSlots.size())
-                .occupiedSlots(occupiedSlots)
-                .enabled(savedParking.isEnabled())
-                .build();
+        ParkingSlotStatus status = ParkingSlotStatus.builder().id(savedParking.getId()).name(savedParking.getName())
+                .location(savedParking.getLocation()).latitude(savedParking.getLatitude())
+                .longitude(savedParking.getLongitude()).totalSlots(parkingSlots.size()).occupiedSlots(occupiedSlots)
+                .enabled(savedParking.isEnabled()).build();
         messagingTemplate.convertAndSend("/topic/parkingStatus", status);
     }
 
@@ -81,29 +76,31 @@ public class ParkingService {
         for (Parking parking : parkings) {
             List<ParkingSlot> parkingSlots = parkingSlotService.getParkingSlotsByParkingId(parking.getId());
             int occupiedSlots = (int) parkingSlots.stream().filter(ParkingSlot::isOccupied).count();
-            ParkingSlotStatus status = ParkingSlotStatus.builder()
-                    .id(parking.getId())
-                    .name(parking.getName())
-                    .location(parking.getLocation())
-                    .latitude(parking.getLatitude())
-                    .longitude(parking.getLongitude())
-                    .totalSlots(parkingSlots.size())
-                    .occupiedSlots(occupiedSlots)
-                    .enabled(parking.isEnabled())
-                    .build();
+            ParkingSlotStatus status = ParkingSlotStatus.builder().id(parking.getId()).name(parking.getName())
+                    .location(parking.getLocation()).latitude(parking.getLatitude()).longitude(parking.getLongitude())
+                    .totalSlots(parkingSlots.size()).occupiedSlots(occupiedSlots).enabled(parking.isEnabled()).build();
             parkingSlotStatuses.add(status);
         }
         return parkingSlotStatuses;
     }
 
-    private void sendParkingConfigurationEvent(String parkingId, Integer numberOfFloors, Integer slotsPerFloor, String type) {
+    public ParkingSlotStatus getParkingStatus(String id) {
+        Parking parking = parkingRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Parking with id " + id + " does not exist"));
+
+        List<ParkingSlot> parkingSlots = parkingSlotService.getParkingSlotsByParkingId(id);
+        int occupiedSlots = (int) parkingSlots.stream().filter(ParkingSlot::isOccupied).count();
+
+        return ParkingSlotStatus.builder().id(parking.getId()).name(parking.getName()).location(parking.getLocation())
+                .latitude(parking.getLatitude()).longitude(parking.getLongitude()).totalSlots(parkingSlots.size())
+                .occupiedSlots(occupiedSlots).enabled(parking.isEnabled()).build();
+    }
+
+    private void sendParkingConfigurationEvent(String parkingId, Integer numberOfFloors, Integer slotsPerFloor,
+                                               String type) {
         try {
-            NewParkingEvent event = NewParkingEvent.builder()
-                    .parkingId(parkingId)
-                    .numberOfFloors(numberOfFloors)
-                    .slotsPerFloor(slotsPerFloor)
-                    .type(type)
-                    .build();
+            NewParkingEvent event = NewParkingEvent.builder().parkingId(parkingId).numberOfFloors(numberOfFloors)
+                    .slotsPerFloor(slotsPerFloor).type(type).build();
 
             String jsonEvent = objectMapper.writeValueAsString(event);
             mqttGateway.sendToMqtt(jsonEvent);

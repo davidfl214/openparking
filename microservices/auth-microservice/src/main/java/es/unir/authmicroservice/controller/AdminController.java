@@ -1,17 +1,11 @@
 package es.unir.authmicroservice.controller;
 
-import es.unir.authmicroservice.dto.AuthResponse;
-import es.unir.authmicroservice.dto.LoginRequest;
 import es.unir.authmicroservice.dto.ModifyUserRequest;
 import lombok.RequiredArgsConstructor;
-import es.unir.authmicroservice.model.Role;
 import es.unir.authmicroservice.model.User;
 import es.unir.authmicroservice.service.AdminService;
-import es.unir.authmicroservice.service.AuthService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

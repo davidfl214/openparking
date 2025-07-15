@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Entity
@@ -33,6 +34,10 @@ public class User implements UserDetails {
 
     @Column(nullable = false)
     private String name;
+
+    @Column(nullable = false, name = "favorites_parking")
+    @ElementCollection
+    private Set<String> favoritesParkings;
 
     @CreationTimestamp
     private Timestamp createdAt;

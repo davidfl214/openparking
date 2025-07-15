@@ -27,7 +27,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
         final String userEmail;
@@ -44,15 +45,14 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             userEmail = jwtService.extractUserEmail(jwt);
             userRole = jwtService.extractUserRole(jwt);
 
-            if (userEmail != null && userRole != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                List<SimpleGrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority(userRole));
+            if (userEmail != null && userRole != null &&
+                    SecurityContextHolder.getContext().getAuthentication() == null) {
+                List<SimpleGrantedAuthority> authorities =
+                        Collections.singletonList(new SimpleGrantedAuthority(userRole));
 
                 UserDetails userDetails = new User(userEmail, "", authorities);
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        userDetails,
-                        null,
-                        userDetails.getAuthorities()
-                );
+                UsernamePasswordAuthenticationToken authToken =
+                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);

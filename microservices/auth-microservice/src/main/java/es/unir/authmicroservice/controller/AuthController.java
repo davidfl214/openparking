@@ -7,9 +7,12 @@ import es.unir.authmicroservice.dto.RegisterRequest;
 import es.unir.authmicroservice.model.Role;
 import es.unir.authmicroservice.service.AuthService;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
@@ -43,11 +46,28 @@ public class AuthController {
 
         response.addCookie(jwtCookie);
 
-        return ResponseEntity.ok(AuthResponse.builder()
-                .role(loginResult.getRole())
-                .name(loginResult.getName())
-                .email(loginResult.getEmail())
-                .build());
+        return ResponseEntity.ok(AuthResponse.builder().role(loginResult.getRole()).name(loginResult.getName()).email(loginResult.getEmail()).favouritesParkings(loginResult.getFavouritesParkings()).build());
+    }
+
+    @PostMapping("/add-favorite-parking")
+    public ResponseEntity<AuthResponse> addParkingToFavorites(@RequestParam String parkingId, HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        String token = null;
+
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("jwt".equals(cookie.getName())) {
+                    token = cookie.getValue();
+                    break;
+                }
+            }
+        }
+
+        if (token == null) {
+            throw new BadCredentialsException("Token inválido");
+        }
+
+        return ResponseEntity.ok(authService.addParkingToFavorites(token, parkingId));
     }
 
 }

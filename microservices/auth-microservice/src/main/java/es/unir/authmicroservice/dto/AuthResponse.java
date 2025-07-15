@@ -4,6 +4,8 @@ import es.unir.authmicroservice.model.Role;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.Set;
+
 @Data
 @Builder
 public class AuthResponse {
@@ -13,4 +15,6 @@ public class AuthResponse {
     private String email;
 
     private String name;
+
+    private Set<String> favouritesParkings;
 }
