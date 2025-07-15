@@ -1,5 +1,3 @@
-import { useContext } from "react";
-import { LocationContext } from "../context/LocationContext";
 import type { AuthResponse } from "../types/authResponse";
 
 const AUTH_MICROSERVICE_BASE_URL =
