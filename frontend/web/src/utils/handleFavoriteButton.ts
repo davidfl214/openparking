@@ -13,7 +13,7 @@ export const handleFavoriteButton = async (parkingId: string, authResponse: Auth
 
     if (isFavorite) {
         const res = await fetch(
-            `${AUTH_MICROSERVICE_BASE_URL}/favorite-parking`,
+            `${AUTH_MICROSERVICE_BASE_URL}/api/auth/favorite-parking`,
             {
                 method: "DELETE",
                 headers: {
@@ -43,7 +43,7 @@ export const handleFavoriteButton = async (parkingId: string, authResponse: Auth
             null;
     } else {
         const res = await fetch(
-            `${AUTH_MICROSERVICE_BASE_URL}/favorite-parking`,
+            `${AUTH_MICROSERVICE_BASE_URL}/api/auth/favorite-parking`,
             {
                 method: "POST",
                 headers: {
