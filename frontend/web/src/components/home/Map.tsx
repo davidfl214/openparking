@@ -34,6 +34,7 @@ export default function Map(): JSX.Element {
         isMobile,
         setParkingData,
         authResponse,
+        setAuthResponse,
     } = useContext(LocationContext);
     const { position: userLocation, error: locationError } = useGeolocation();
     const [loading, setLoading] = useState<boolean>(true);
@@ -216,19 +217,23 @@ export default function Map(): JSX.Element {
                                             >
                                                 Ver detalles
                                             </Button>
-                                            {authResponse && (
-                                                authResponse.parkingFavorites && authResponse.parkingFavorites.includes(parking.id) ? (
+                                            {authResponse &&
+                                                (authResponse.parkingFavorites &&
+                                                authResponse.parkingFavorites.includes(
+                                                    parking.id
+                                                ) ? (
                                                     <Favorite
                                                         fontSize="large"
                                                         sx={{
                                                             cursor: "pointer",
-                                                            color: "#ef4444"
+                                                            color: "#ef4444",
                                                         }}
                                                         onClick={async () => {
                                                             try {
                                                                 await handleFavoriteButton(
                                                                     parking.id,
-                                                                    authResponse
+                                                                    authResponse,
+                                                                    setAuthResponse
                                                                 );
                                                             } catch (error) {
                                                                 Swal.fire({
@@ -262,7 +267,8 @@ export default function Map(): JSX.Element {
                                                             try {
                                                                 await handleFavoriteButton(
                                                                     parking.id,
-                                                                    authResponse
+                                                                    authResponse,
+                                                                    setAuthResponse
                                                                 );
                                                             } catch (error) {
                                                                 Swal.fire({
@@ -286,8 +292,7 @@ export default function Map(): JSX.Element {
                                                             }
                                                         }}
                                                     />
-                                                )
-                                            )}
+                                                ))}
                                         </div>
                                     </div>
                                 </Popup>

@@ -12,6 +12,7 @@ interface LocationContextType {
     setLatitudeSearch: Dispatch<SetStateAction<number | null>>;
     setLongitudeSearch: Dispatch<SetStateAction<number | null>>;
     setParkingData: Dispatch<SetStateAction<ParkingData[]>>;
+    setAuthResponse: Dispatch<SetStateAction<AuthResponse | null>>;
 }
 
 export const LocationContext = React.createContext<LocationContextType>({
@@ -23,4 +24,5 @@ export const LocationContext = React.createContext<LocationContextType>({
     setLatitudeSearch: () => {},
     setLongitudeSearch: () => {},
     setParkingData: () => {},
+    setAuthResponse: () => {},
 });
