@@ -38,7 +38,7 @@ public class AuthService {
         userRepository.save(newUser);
 
         return AuthResponse.builder().role(newUser.getRole()).email(newUser.getEmail()).name(newUser.getName())
-                .favouritesParkings(newUser.getFavoritesParkings()).build();
+                .parkingFavorites(newUser.getFavoritesParkings()).build();
     }
 
     public LoginResult login(LoginRequest request) {
@@ -52,7 +52,7 @@ public class AuthService {
         String token = jwtService.generateToken(user);
 
         return LoginResult.builder().token(token).role(user.getRole()).email(user.getEmail()).name(user.getName())
-                .favouritesParkings(user.getFavoritesParkings()).build();
+                .parkingFavorites(user.getFavoritesParkings()).build();
     }
 
     public AuthResponse addParkingToFavorites(String parkingId, String token) {
@@ -82,7 +82,7 @@ public class AuthService {
         userRepository.save(user);
 
         return AuthResponse.builder().role(user.getRole()).email(user.getEmail()).name(user.getName())
-                .favouritesParkings(user.getFavoritesParkings()).build();
+                .parkingFavorites(user.getFavoritesParkings()).build();
     }
 
     public AuthResponse removeParkingFromFavorites(String parkingId, String token) {
@@ -102,7 +102,7 @@ public class AuthService {
         userRepository.save(user);
 
         return AuthResponse.builder().role(user.getRole()).email(user.getEmail()).name(user.getName())
-                .favouritesParkings(user.getFavoritesParkings()).build();
+                .parkingFavorites(user.getFavoritesParkings()).build();
     }
 
 }

@@ -41,7 +41,7 @@ public class AuthController {
 
         response.addCookie(jwtCookie);
 
-        return ResponseEntity.ok(AuthResponse.builder().role(loginResult.getRole()).name(loginResult.getName()).email(loginResult.getEmail()).favouritesParkings(loginResult.getFavouritesParkings()).build());
+        return ResponseEntity.ok(AuthResponse.builder().role(loginResult.getRole()).name(loginResult.getName()).email(loginResult.getEmail()).parkingFavorites(loginResult.getParkingFavorites()).build());
     }
 
     @PatchMapping("/favorite-parking")
