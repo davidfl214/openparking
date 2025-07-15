@@ -4,27 +4,19 @@ import es.unir.authmicroservice.dto.AuthResponse;
 import es.unir.authmicroservice.dto.LoginRequest;
 import es.unir.authmicroservice.dto.LoginResult;
 import es.unir.authmicroservice.dto.RegisterRequest;
-import es.unir.authmicroservice.model.Role;
 import es.unir.authmicroservice.service.AuthService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.*;
-
-import java.sql.Timestamp;
-import java.util.Map;
-
 
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
-@Slf4j
 public class AuthController {
 
     private final AuthService authService;
@@ -57,8 +49,6 @@ public class AuthController {
         Cookie[] cookies = request.getCookies();
         String token = null;
 
-        log.info("The cookies are: {}", (Object) cookies);
-
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if ("jwt".equals(cookie.getName())) {
@@ -67,7 +57,6 @@ public class AuthController {
                 }
             }
         }
-        log.info("The token is: {}", token);
 
         if (token == null) {
             throw new BadCredentialsException("Token inválido");

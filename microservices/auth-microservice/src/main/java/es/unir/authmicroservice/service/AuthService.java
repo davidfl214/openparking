@@ -6,6 +6,7 @@ import es.unir.authmicroservice.dto.LoginResult;
 import es.unir.authmicroservice.dto.RegisterRequest;
 import es.unir.authmicroservice.exception.FavouriteParkingException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import es.unir.authmicroservice.model.Role;
 import es.unir.authmicroservice.model.User;
 import es.unir.authmicroservice.repository.UserRepository;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class AuthService {
 
     private final UserRepository userRepository;
@@ -56,6 +58,7 @@ public class AuthService {
     }
 
     public AuthResponse addParkingToFavorites(String parkingId, String token) {
+        log.info("Token used: {}", token);
         String userEmail = jwtService.extractUsername(token);
 
         if (userEmail == null) {
