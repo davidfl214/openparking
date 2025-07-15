@@ -229,7 +229,8 @@ export default function Map(): JSX.Element {
                                                 onClick={async () => {
                                                     try {
                                                         await handleFavoriteButton(
-                                                            parking.id
+                                                            parking.id,
+                                                            authResponse
                                                         );
                                                     } catch (error) {
                                                         Swal.fire({

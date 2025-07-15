@@ -1,11 +1,11 @@
 import { useContext } from "react";
 import { LocationContext } from "../context/LocationContext";
+import type { AuthResponse } from "../types/authResponse";
 
 const AUTH_MICROSERVICE_BASE_URL =
     import.meta.env.VITE_AUTH_MICROSERVICE_URL || "http://localhost:8080";
-const { authResponse } = useContext(LocationContext);
 
-export const handleFavoriteButton = async (parkingId: string) => {
+export const handleFavoriteButton = async (parkingId: string, authResponse: AuthResponse) => {
     if (!authResponse) {
         console.error("User is not authenticated.");
         return;
