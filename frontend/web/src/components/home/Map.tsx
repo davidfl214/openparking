@@ -20,7 +20,7 @@ import SockJS from "sockjs-client";
 import { LocationContext } from "../../context/LocationContext";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@mui/material";
-import { FavoriteBorder } from "@mui/icons-material";
+import { Favorite, FavoriteBorder } from "@mui/icons-material";
 import { handleFavoriteButton } from "../../utils/handleFavoriteButton";
 
 const PARKINGS_MICROSERVICE_BASE_URL =
@@ -200,60 +200,95 @@ export default function Map(): JSX.Element {
                                                 {parking.occupiedSlots} Occupied
                                             </span>
                                         </div>
-                                        <Button
-                                            variant="contained"
-                                            sx={{
-                                                mt: 2,
-                                                bgcolor: "var(--color-primary)",
-                                                fontWeight: "bold",
-                                            }}
-                                            onClick={() =>
-                                                navigate(
-                                                    `/parkings/${parking.id}`
-                                                )
-                                            }
-                                        >
-                                            Ver detalles
-                                        </Button>
-                                        {authResponse && (
-                                            <FavoriteBorder
+                                        <div className="flex justify-center items-center gap-4 mt-4">
+                                            <Button
+                                                variant="contained"
                                                 sx={{
-                                                    mt: 1,
-                                                    color: authResponse.parkingFavorites?.includes(
-                                                        parking.id
+                                                    bgcolor:
+                                                        "var(--color-primary)",
+                                                    fontWeight: "bold",
+                                                }}
+                                                onClick={() =>
+                                                    navigate(
+                                                        `/parkings/${parking.id}`
                                                     )
-                                                        ? "red"
-                                                        : "gray",
-                                                    cursor: "pointer",
-                                                }}
-                                                onClick={async () => {
-                                                    try {
-                                                        await handleFavoriteButton(
-                                                            parking.id,
-                                                            authResponse
-                                                        );
-                                                    } catch (error) {
-                                                        Swal.fire({
-                                                            toast: true,
-                                                            position: isMobile
-                                                                ? "top"
-                                                                : "top-end",
-                                                            icon: "error",
-                                                            title: "<strong>Error</strong>",
-                                                            html: "Ha habido un problema al actualizar el favorito.",
-                                                            showConfirmButton:
-                                                                false,
-                                                            timer: 3000,
-                                                            background:
-                                                                "#fef2f2",
-                                                            color: "#991b1b",
-                                                            timerProgressBar:
-                                                                true,
-                                                        });
-                                                    }
-                                                }}
-                                            />
-                                        )}
+                                                }
+                                            >
+                                                Ver detalles
+                                            </Button>
+                                            {authResponse && (
+                                                authResponse.parkingFavorites && authResponse.parkingFavorites.includes(parking.id) ? (
+                                                    <Favorite
+                                                        fontSize="large"
+                                                        sx={{
+                                                            cursor: "pointer",
+                                                            color: "#ef4444"
+                                                        }}
+                                                        onClick={async () => {
+                                                            try {
+                                                                await handleFavoriteButton(
+                                                                    parking.id,
+                                                                    authResponse
+                                                                );
+                                                            } catch (error) {
+                                                                Swal.fire({
+                                                                    toast: true,
+                                                                    position:
+                                                                        isMobile
+                                                                            ? "top"
+                                                                            : "top-end",
+                                                                    icon: "error",
+                                                                    title: "<strong>Error</strong>",
+                                                                    html: "Ha habido un problema al actualizar el favorito.",
+                                                                    showConfirmButton:
+                                                                        false,
+                                                                    timer: 3000,
+                                                                    background:
+                                                                        "#fef2f2",
+                                                                    color: "#991b1b",
+                                                                    timerProgressBar:
+                                                                        true,
+                                                                });
+                                                            }
+                                                        }}
+                                                    />
+                                                ) : (
+                                                    <FavoriteBorder
+                                                        fontSize="large"
+                                                        sx={{
+                                                            cursor: "pointer",
+                                                        }}
+                                                        onClick={async () => {
+                                                            try {
+                                                                await handleFavoriteButton(
+                                                                    parking.id,
+                                                                    authResponse
+                                                                );
+                                                            } catch (error) {
+                                                                Swal.fire({
+                                                                    toast: true,
+                                                                    position:
+                                                                        isMobile
+                                                                            ? "top"
+                                                                            : "top-end",
+                                                                    icon: "error",
+                                                                    title: "<strong>Error</strong>",
+                                                                    html: "Ha habido un problema al actualizar el favorito.",
+                                                                    showConfirmButton:
+                                                                        false,
+                                                                    timer: 3000,
+                                                                    background:
+                                                                        "#fef2f2",
+                                                                    color: "#991b1b",
+                                                                    timerProgressBar:
+                                                                        true,
+                                                                });
+                                                            }
+                                                        }}
+                                                    />
+                                                )
+                                            )}
+                                        </div>
                                     </div>
                                 </Popup>
                             </Marker>
