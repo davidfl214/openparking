@@ -16,5 +16,5 @@ public class AuthResponse {
 
     private String name;
 
-    private Set<String> favouritesParkings;
+    private Set<String> parkingFavorites;
 }

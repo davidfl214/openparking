@@ -18,5 +18,5 @@ public class LoginResult {
 
     private Role role;
 
-    private Set<String> favouritesParkings;
+    private Set<String> parkingFavorites;
 }
