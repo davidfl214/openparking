@@ -49,7 +49,7 @@ public class AuthController {
         return ResponseEntity.ok(AuthResponse.builder().role(loginResult.getRole()).name(loginResult.getName()).email(loginResult.getEmail()).favouritesParkings(loginResult.getFavouritesParkings()).build());
     }
 
-    @PostMapping("/favorite-parking")
+    @PatchMapping("/favorite-parking")
     public ResponseEntity<AuthResponse> addParkingToFavorites(@RequestParam String parkingId, HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
         String token = null;
