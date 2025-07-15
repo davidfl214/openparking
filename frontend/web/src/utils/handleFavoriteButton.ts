@@ -34,6 +34,8 @@ export const handleFavoriteButton = async (
             );
         }
 
+        localStorage.setItem("parkingFavorites", JSON.stringify(authResponse.parkingFavorites?.filter((id) => id !== parkingId)));
+
         const updatedAuthResponse = {
             ...authResponse,
             parkingFavorites: authResponse.parkingFavorites?.filter((id) => id !== parkingId) ?? null
@@ -57,6 +59,8 @@ export const handleFavoriteButton = async (
                 errorData?.message || "Error adding parking to favorites"
             );
         }
+
+        localStorage.setItem("parkingFavorites", JSON.stringify([...authResponse.parkingFavorites || [], parkingId]));
 
         const updatedAuthResponse = {
             ...authResponse,
