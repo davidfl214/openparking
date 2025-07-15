@@ -49,7 +49,7 @@ public class AuthController {
         return ResponseEntity.ok(AuthResponse.builder().role(loginResult.getRole()).name(loginResult.getName()).email(loginResult.getEmail()).favouritesParkings(loginResult.getFavouritesParkings()).build());
     }
 
-    @PostMapping("/add-favorite-parking")
+    @PostMapping("/favorite-parking")
     public ResponseEntity<AuthResponse> addParkingToFavorites(@RequestParam String parkingId, HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
         String token = null;
@@ -68,6 +68,27 @@ public class AuthController {
         }
 
         return ResponseEntity.ok(authService.addParkingToFavorites(token, parkingId));
+    }
+
+    @DeleteMapping("/favorite-parking")
+    public ResponseEntity<AuthResponse> removeParkingFromFavorites(@RequestParam String parkingId, HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        String token = null;
+
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("jwt".equals(cookie.getName())) {
+                    token = cookie.getValue();
+                    break;
+                }
+            }
+        }
+
+        if (token == null) {
+            throw new BadCredentialsException("Token inválido");
+        }
+
+        return ResponseEntity.ok(authService.removeParkingFromFavorites(token, parkingId));
     }
 
 }

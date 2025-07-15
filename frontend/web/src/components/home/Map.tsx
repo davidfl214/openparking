@@ -20,6 +20,8 @@ import SockJS from "sockjs-client";
 import { LocationContext } from "../../context/LocationContext";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@mui/material";
+import { FavoriteBorder } from "@mui/icons-material";
+import { handleFavoriteButton } from "../../utils/handleFavoriteButton";
 
 const PARKINGS_MICROSERVICE_BASE_URL =
     import.meta.env.VITE_PARKINGS_MICROSERVICE_URL || "http://localhost:8080";
@@ -31,6 +33,7 @@ export default function Map(): JSX.Element {
         parkingData,
         isMobile,
         setParkingData,
+        authResponse,
     } = useContext(LocationContext);
     const { position: userLocation, error: locationError } = useGeolocation();
     const [loading, setLoading] = useState<boolean>(true);
@@ -212,6 +215,44 @@ export default function Map(): JSX.Element {
                                         >
                                             Ver detalles
                                         </Button>
+                                        {authResponse && (
+                                            <FavoriteBorder
+                                                sx={{
+                                                    mt: 1,
+                                                    color: authResponse.parkingFavorites?.includes(
+                                                        parking.id
+                                                    )
+                                                        ? "red"
+                                                        : "gray",
+                                                    cursor: "pointer",
+                                                }}
+                                                onClick={async () => {
+                                                    try {
+                                                        await handleFavoriteButton(
+                                                            parking.id
+                                                        );
+                                                    } catch (error) {
+                                                        Swal.fire({
+                                                            toast: true,
+                                                            position: isMobile
+                                                                ? "top"
+                                                                : "top-end",
+                                                            icon: "error",
+                                                            title: "<strong>Error</strong>",
+                                                            html: "Ha habido un problema al actualizar el favorito.",
+                                                            showConfirmButton:
+                                                                false,
+                                                            timer: 3000,
+                                                            background:
+                                                                "#fef2f2",
+                                                            color: "#991b1b",
+                                                            timerProgressBar:
+                                                                true,
+                                                        });
+                                                    }
+                                                }}
+                                            />
+                                        )}
                                     </div>
                                 </Popup>
                             </Marker>

@@ -85,5 +85,25 @@ public class AuthService {
                 .favouritesParkings(user.getFavoritesParkings()).build();
     }
 
+    public AuthResponse removeParkingFromFavorites(String parkingId, String token) {
+        String userEmail = jwtService.extractUsername(token);
+
+        if (userEmail == null) {
+            throw new BadCredentialsException("Token inválido");
+        }
+
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new BadCredentialsException("Usuario no encontrado"));
+
+        if (!user.getFavoritesParkings().remove(parkingId)) {
+            throw new FavouriteParkingException("El parking no está en favoritos");
+        }
+
+        userRepository.save(user);
+
+        return AuthResponse.builder().role(user.getRole()).email(user.getEmail()).name(user.getName())
+                .favouritesParkings(user.getFavoritesParkings()).build();
+    }
+
 }
 
