@@ -9,7 +9,6 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -18,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
-@Slf4j
 public class AuthController {
 
     private final AuthService authService;
@@ -74,7 +72,6 @@ public class AuthController {
 
         if (cookies != null) {
             for (Cookie cookie : cookies) {
-                log.info("Cookie name: {}, value: {}", cookie.getName(), cookie.getValue());
                 if ("jwt".equals(cookie.getName())) {
                     token = cookie.getValue();
                     break;
@@ -86,7 +83,7 @@ public class AuthController {
             throw new BadCredentialsException("Token inválido");
         }
 
-        return ResponseEntity.ok(authService.removeParkingFromFavorites(token, parkingId));
+        return ResponseEntity.ok(authService.removeParkingFromFavorites(parkingId, token));
     }
 
 }
