@@ -62,7 +62,7 @@ public class AuthController {
             throw new BadCredentialsException("Token inválido");
         }
 
-        return ResponseEntity.ok(authService.addParkingToFavorites(token, parkingId));
+        return ResponseEntity.ok(authService.addParkingToFavorites(parkingId, token));
     }
 
     @DeleteMapping("/favorite-parking")
