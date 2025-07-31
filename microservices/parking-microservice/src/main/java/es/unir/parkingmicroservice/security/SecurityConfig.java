@@ -30,9 +30,8 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.csrf(AbstractHttpConfigurer::disable).authorizeHttpRequests(
                         auth -> auth
-                                .requestMatchers(HttpMethod.POST, "/parkings").hasAuthority("ADMIN")
-                                .requestMatchers(HttpMethod.DELETE, "/parkings/{id}").hasAuthority("ADMIN")
                                 .requestMatchers(HttpMethod.GET, "/parkings/**").permitAll()
+                                .requestMatchers("/parkings/**").hasAuthority("ADMIN")
                                 .requestMatchers(HttpMethod.GET, "/parking-slots/**").permitAll()
                                 .requestMatchers("/parking-slots/**").hasAuthority("ADMIN")
                                 .anyRequest().authenticated())

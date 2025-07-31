@@ -1,35 +1,37 @@
 import type { JSX } from "react";
-import type { ParkingSlotData } from "../../types/parkingSlotData";
+import type { ParkingData } from "../../types/parking";
 
 export default function ParkingDetailsBox({
     parking,
 }: {
-    parking: ParkingSlotData;
+    parking: ParkingData;
 }): JSX.Element {
+    const percentOccupied = (parking.occupiedSlots / parking.totalSlots) * 100;
+
+    const getColorClasses = () => {
+        if (percentOccupied <= 60) {
+            return "border-green-400 bg-green-100";
+        } else if (percentOccupied < 100) {
+            return "border-orange-400 bg-orange-100";
+        } else {
+            return "border-red-400 bg-red-100";
+        }
+    };
+
     return (
         <div
             key={parking.id}
-            className={`p-4 rounded-lg shadow-md ${
-                parking.occupied
-                    ? "bg-red-100 border border-red-400"
-                    : "bg-green-100 border border-green-400"
-            }`}
+            className={`p-4 rounded-lg shadow-md border-2 ${getColorClasses()}`}
         >
-            <p className="text-lg font-medium">Planta: {parking.floor}</p>
-            <p className="text-lg font-medium">Plaza: {parking.slot}</p>
+            <h2 className="font-bold text-lg">{parking.name}</h2>
+            <p className="text-gray-600">{parking.location}</p>
             <p className="text-md">
-                Estado:{" "}
-                <span
-                    className={`font-semibold ${
-                        parking.occupied ? "text-red-700" : "text-green-700"
-                    }`}
-                >
-                    {parking.occupied ? "Ocupada" : "Libre"}
-                </span>
+                Total de plazas:{" "}
+                <span className="font-bold">{parking.totalSlots}</span>
             </p>
-            <p className="text-sm text-gray-500">
-                Última actualización:{" "}
-                {new Date(parking.lastUpdated).toLocaleString()}
+            <p className="text-md">
+                Porcentaje de ocupación:{" "}
+                <span className="font-bold">{percentOccupied.toFixed(1)}%</span>
             </p>
         </div>
     );

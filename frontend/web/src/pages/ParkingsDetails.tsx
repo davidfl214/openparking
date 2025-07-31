@@ -5,7 +5,7 @@ import { LocationContext } from "../context/LocationContext";
 import Swal from "sweetalert2";
 import { fetchParkingsDetails } from "../utils/getParkingDetails";
 import { ArrowBack, Refresh } from "@mui/icons-material";
-import ParkingDetailsBox from "../components/parking-details/ParkingDetailsBox";
+import ParkingSlotDetailsBox from "../components/parking-details/ParkingSlotDetailsBox";
 
 export default function ParkingDetailsPage(): JSX.Element {
     const PARKINGS_MICROSERVICE_BASE_URL =
@@ -158,7 +158,7 @@ export default function ParkingDetailsPage(): JSX.Element {
                 </h2>
                 <div className="grid grid-cols-2 laptop:grid-cols-3 gap-4">
                     {sortedParkingInfo.map((slotData) => (
-                        <ParkingDetailsBox
+                        <ParkingSlotDetailsBox
                             key={slotData.id}
                             parking={slotData}
                         />
