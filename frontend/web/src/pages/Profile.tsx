@@ -41,7 +41,7 @@ export default function Profile(): JSX.Element | null {
         )
             authResponse.parkingFavorites.forEach(async (parking) => {
                 try {
-                    const response = await fetch(`${PARKINGS_MICROSERVICE_BASE_URL}/${parking}/status`);
+                    const response = await fetch(`${PARKINGS_MICROSERVICE_BASE_URL}/parkings/${parking}/status`);
                     const statusData: ParkingSlotData = await response.json();
                     setFavoriteParkingsData((prevData) => [
                         ...prevData,
