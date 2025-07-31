@@ -184,11 +184,11 @@ export default function Map(): JSX.Element {
                                 }}
                             >
                                 <Popup>
-                                    <div className="text-center p-2">
+                                    <div className="text-center p-1">
                                         <h2 className="font-bold text-lg">
                                             {parking.name}
                                         </h2>
-                                        <p className="text-gray-600">
+                                        <p className="text-gray-600 max-w-[250px] mx-auto">
                                             {parking.location}
                                         </p>
                                         <div className="flex justify-center gap-2 mt-2">

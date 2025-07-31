@@ -29,9 +29,13 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.csrf(AbstractHttpConfigurer::disable).authorizeHttpRequests(
-                        auth -> auth.requestMatchers(HttpMethod.GET, "/parkings/**").permitAll().requestMatchers("/parkings/**")
-                                .hasAuthority("ADMIN").requestMatchers(HttpMethod.GET, "/parking-slots/**").permitAll()
-                                .requestMatchers("/parking-slots/**").hasAuthority("ADMIN").anyRequest().authenticated())
+                        auth -> auth
+                                .requestMatchers(HttpMethod.POST, "/parkings").hasAuthority("ADMIN")
+                                .requestMatchers(HttpMethod.DELETE, "/parkings/{id}").hasAuthority("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/parkings/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/parking-slots/**").permitAll()
+                                .requestMatchers("/parking-slots/**").hasAuthority("ADMIN")
+                                .anyRequest().authenticated())
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class).build();
     }

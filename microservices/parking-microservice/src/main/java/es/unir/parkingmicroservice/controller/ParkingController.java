@@ -26,14 +26,12 @@ public class ParkingController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Void> createParking(@Valid @RequestBody ParkingDTO newParking) {
         parkingService.createParking(newParking);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Void> deleteParking(@PathVariable("id") String id) {
         parkingService.deleteParking(id);
         return ResponseEntity.status(HttpStatus.OK).build();
