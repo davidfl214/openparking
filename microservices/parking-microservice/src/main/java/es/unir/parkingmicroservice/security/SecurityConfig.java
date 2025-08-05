@@ -30,6 +30,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.csrf(AbstractHttpConfigurer::disable).authorizeHttpRequests(
                         auth -> auth
+                                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/parkings/**").permitAll()
                                 .requestMatchers("/parkings/**").hasAuthority("ADMIN")
                                 .requestMatchers(HttpMethod.GET, "/parking-slots/**").permitAll()
