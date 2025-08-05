@@ -18,8 +18,7 @@ export default async function validateToken(): Promise<boolean> {
         }
 
         const data: ValidateResponse = await res.json();
-
-        return data.isValid && data.role === "ADMIN";
+        return data.valid && data.role === "ADMIN";
     } catch (error) {
         console.error("Error al validar el token:", error);
         return false;
