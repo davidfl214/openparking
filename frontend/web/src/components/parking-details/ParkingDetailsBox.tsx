@@ -1,5 +1,6 @@
 import type { JSX } from "react";
 import type { ParkingData } from "../../types/parking";
+import { Map } from "@mui/icons-material";
 
 export default function ParkingDetailsBox({
     parking,
@@ -18,10 +19,16 @@ export default function ParkingDetailsBox({
         }
     };
 
+    const handleOpenMaps = () => {
+        const { latitude, longitude } = parking;
+        const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}`;
+        window.open(mapsUrl, "_blank");
+    };
+
     return (
         <div
             key={parking.id}
-            className={`p-4 rounded-lg shadow-md border-2 ${getColorClasses()}`}
+            className={`p-4 rounded-lg shadow-md border-2 flex flex-col gap-2 ${getColorClasses()}`}
         >
             <h2 className="font-bold text-lg">{parking.name}</h2>
             <p className="text-gray-600">{parking.location}</p>
@@ -30,9 +37,18 @@ export default function ParkingDetailsBox({
                 <span className="font-bold">{parking.totalSlots}</span>
             </p>
             <p className="text-md">
-                Porcentaje de ocupación:{" "}
+                % ocupación:{" "}
                 <span className="font-bold">{percentOccupied.toFixed(1)}%</span>
             </p>
+            <button
+                onClick={handleOpenMaps}
+                className="px-4 py-2 cursor-pointer border-2 border-primary text-primary rounded-md flex items-center justify-center space-x-2 hover:bg-primary hover:text-white transition-colors duration-150"
+            >
+                <div className="flex items-center gap-2">
+                    <Map fontSize="small" />
+                    <span>Abrir en Google Maps</span>
+                </div>
+            </button>
         </div>
     );
 }

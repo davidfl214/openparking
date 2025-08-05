@@ -20,7 +20,7 @@ import SockJS from "sockjs-client";
 import { LocationContext } from "../../context/LocationContext";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@mui/material";
-import { Favorite, FavoriteBorder } from "@mui/icons-material";
+import { Directions, Favorite, FavoriteBorder } from "@mui/icons-material";
 import { handleFavoriteButton } from "../../utils/handleFavoriteButton";
 
 const PARKINGS_MICROSERVICE_BASE_URL =
@@ -217,6 +217,19 @@ export default function Map(): JSX.Element {
                                             >
                                                 Ver detalles
                                             </Button>
+                                            <Directions
+                                                fontSize="large"
+                                                sx={{
+                                                    cursor: "pointer",
+                                                }}
+                                                onClick={() => {
+                                                    const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${parking.latitude},${parking.longitude}`;
+                                                    window.open(
+                                                        mapsUrl,
+                                                        "_blank"
+                                                    );
+                                                }}
+                                            />
                                             {authResponse &&
                                                 (authResponse.parkingFavorites &&
                                                 authResponse.parkingFavorites.includes(

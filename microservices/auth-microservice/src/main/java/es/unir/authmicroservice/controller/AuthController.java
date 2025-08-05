@@ -44,6 +44,19 @@ public class AuthController {
         return ResponseEntity.ok(AuthResponse.builder().role(loginResult.getRole()).name(loginResult.getName()).email(loginResult.getEmail()).parkingFavorites(loginResult.getParkingFavorites()).build());
     }
 
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(HttpServletResponse response) {
+        Cookie jwtCookie = new Cookie("jwt", null);
+        jwtCookie.setHttpOnly(true);
+        jwtCookie.setMaxAge(0);
+        jwtCookie.setPath("/");
+        jwtCookie.setSecure(true);
+
+        response.addCookie(jwtCookie);
+
+        return ResponseEntity.ok().build();
+    }
+
     @PatchMapping("/favorite-parking")
     public ResponseEntity<AuthResponse> addParkingToFavorites(@RequestParam String parkingId, HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();

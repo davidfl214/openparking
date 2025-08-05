@@ -90,7 +90,9 @@ export default function Profile(): JSX.Element | null {
         if (result.isConfirmed) {
             try {
                 const response = await fetch(
-                    `${import.meta.env.VITE_AUTH_MICROSERVICE_URL}/api/auth/logout`,
+                    `${
+                        import.meta.env.VITE_AUTH_MICROSERVICE_URL
+                    }/api/auth/logout`,
                     {
                         method: "POST",
                         headers: {
@@ -102,7 +104,9 @@ export default function Profile(): JSX.Element | null {
 
                 if (!response.ok) {
                     const errorData = await response.json();
-                    throw new Error(errorData?.message || "Error al cerrar sesión");
+                    throw new Error(
+                        errorData?.message || "Error al cerrar sesión"
+                    );
                 }
 
                 localStorage.removeItem("userRole");
@@ -163,42 +167,40 @@ export default function Profile(): JSX.Element | null {
                     <h1 className="text-4xl font-bold text-white mx-auto">
                         Perfil de usuario
                     </h1>
-                    {authResponse && (
-                        <div className="flex flex-col items-center gap-4 p-6 bg-white rounded-lg shadow-lg max-w-sm w-full">
-                            <div className="text-center">
-                                <div className="flex items-center justify-center gap-2">
-                                    <AccountCircle fontSize="large" />
-                                    <p className="text-2xl font-semibold text-black">
-                                        {authResponse.name}
-                                    </p>
-                                </div>
-                                <div className="flex items-center justify-center gap-2 mt-2">
-                                    <Email fontSize="small" />
-                                    <p className="text-md text-black">
-                                        {authResponse.email}
-                                    </p>
-                                </div>
+                    <div className="flex flex-col items-center gap-2 p-4 bg-white rounded-lg shadow-lg max-w-[90%] tablet:max-w-sm w-full">
+                        <div className="text-center flex gap-2 flex-col items-center">
+                            <div className="flex items-center justify-center gap-2">
+                                <AccountCircle fontSize="large" />
+                                <p className="text-2xl font-semibold text-black">
+                                    {authResponse.name}
+                                </p>
                             </div>
-                            <div className="max-w-[70%] w-full flex">
-                                <Button
-                                    onClick={handleLogout}
-                                    fullWidth
-                                    variant="contained"
-                                    sx={{
-                                        m: 1,
-                                        bgcolor: "var(--color-secondary)",
-                                        fontWeight: "bold",
-                                    }}
-                                >
-                                    Cerrar sesión
-                                </Button>
+                            <div className="flex items-center justify-center gap-2 mt-2">
+                                <Email fontSize="small" />
+                                <p className="text-md text-black">
+                                    {authResponse.email}
+                                </p>
                             </div>
                         </div>
-                    )}
+                        <div className="max-w-[70%] w-full flex">
+                            <Button
+                                onClick={handleLogout}
+                                fullWidth
+                                variant="contained"
+                                sx={{
+                                    m: 1,
+                                    bgcolor: "var(--color-secondary)",
+                                    fontWeight: "bold",
+                                }}
+                            >
+                                Cerrar sesión
+                            </Button>
+                        </div>
+                    </div>
                     <h2 className="text-3xl font-bold text-white">
                         Parkings favoritos
                     </h2>
-                    <div className="grid grid-cols-2 laptop:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 tablet:grid-cols-2 laptop:grid-cols-3 gap-4 max-w-[90%] tablet:max-w-6xl w-full">
                         {favoriteParkingsData.length > 0 ? (
                             favoriteParkingsData.map((parking) => (
                                 <ParkingDetailsBox
