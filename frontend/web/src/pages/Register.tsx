@@ -46,7 +46,6 @@ export default function Register() {
             }
             const data = await response.json();
 
-            // ✅ Si hay token, lo guardamos y redirigimos
             if (data.token) {
                 document.cookie = `jwt=${data.token}; path=/; max-age=86400; secure; samesite=Strict`;
                 console.log("Token guardado:", data.token);
@@ -61,9 +60,9 @@ export default function Register() {
                     background: "#f0fdf4",
                     color: "#166534",
                     timerProgressBar: true,
-                });console.log("Registro exitoso:", data);
+                });
+                console.log("Registro exitoso:", data);
                 console.log("Redirigiendo a la página principal...")
-                // Redirigir a la página de inicio de sesión
                 navigate("/");
             } else {
                 Swal.fire({
