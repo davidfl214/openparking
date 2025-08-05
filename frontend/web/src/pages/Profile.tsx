@@ -11,14 +11,15 @@ export default function Profile(): JSX.Element | null {
     const PARKINGS_MICROSERVICE_BASE_URL =
         import.meta.env.VITE_PARKINGS_MICROSERVICE_URL ||
         "http://localhost:8080";
-    const { authResponse, isMobile } = useContext(LocationContext);
+    const { authResponse, setAuthResponse, isMobile } = useContext(LocationContext);
     const [favoriteParkingsData, setFavoriteParkingsData] = useState<
         ParkingData[]
     >([]);
+    const [loggingOut, setLoggingOut] = useState<boolean>(false);
     const navigate = useNavigate();
 
     const checkAuth = (): void => {
-        if (!authResponse) {
+        if (!authResponse && !loggingOut) {
             Swal.fire({
                 toast: true,
                 position: isMobile ? "top" : "top-end",
@@ -26,12 +27,11 @@ export default function Profile(): JSX.Element | null {
                 title: "<strong>Error de autenticación</strong>",
                 text: "Por favor, inicia sesión para ver tu perfil",
                 showConfirmButton: false,
-                timer: 3000,
+                timer: 2000,
                 background: "#fef2f2",
                 color: "#991b1b",
                 timerProgressBar: true,
             });
-
             navigate("/login");
         }
     };
@@ -63,7 +63,7 @@ export default function Profile(): JSX.Element | null {
                             error.message ||
                             "Error al obtener información del parking",
                         showConfirmButton: false,
-                        timer: 3000,
+                        timer: 2000,
                         background: "#fef2f2",
                         color: "#991b1b",
                         timerProgressBar: true,
@@ -89,6 +89,7 @@ export default function Profile(): JSX.Element | null {
         });
         if (result.isConfirmed) {
             try {
+                setLoggingOut(true);
                 const response = await fetch(
                     `${
                         import.meta.env.VITE_AUTH_MICROSERVICE_URL
@@ -115,6 +116,7 @@ export default function Profile(): JSX.Element | null {
                 localStorage.removeItem("expiration");
                 localStorage.removeItem("parkingFavorites");
                 setFavoriteParkingsData([]);
+                setAuthResponse(null);
                 Swal.fire({
                     toast: true,
                     position: isMobile ? "top" : "top-end",
@@ -122,7 +124,7 @@ export default function Profile(): JSX.Element | null {
                     title: "<strong>Sesión cerrada</strong>",
                     text: "Has cerrado sesión correctamente",
                     showConfirmButton: false,
-                    timer: 3000,
+                    timer: 2000,
                     background: "#f0fdf4",
                     color: "#166534",
                     timerProgressBar: true,
@@ -136,7 +138,7 @@ export default function Profile(): JSX.Element | null {
                     title: "<strong>Error al cerrar sesión</strong>",
                     text: "Error inesperado al cerrar sesión",
                     showConfirmButton: false,
-                    timer: 3000,
+                    timer: 2000,
                     background: "#fef2f2",
                     color: "#991b1b",
                     timerProgressBar: true,

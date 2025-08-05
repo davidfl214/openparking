@@ -60,7 +60,7 @@ export default function Map(): JSX.Element {
                     icon: "error",
                     title: "<strong>Failed to load initial parking data</strong>",
                     showConfirmButton: false,
-                    timer: 3000,
+                    timer: 2000,
                     background: "#fef2f2",
                     color: "#991b1b",
                     timerProgressBar: true,
@@ -106,7 +106,7 @@ export default function Map(): JSX.Element {
                     title: "<strong>WebSocket Error</strong>",
                     html: "Could not connect to real-time updates. Please refresh.",
                     showConfirmButton: false,
-                    timer: 5000,
+                    timer: 2000,
                     background: "#fef2f2",
                     color: "#991b1b",
                     timerProgressBar: true,
@@ -135,7 +135,7 @@ export default function Map(): JSX.Element {
                 title: "<strong>Location Error</strong>",
                 html: locationError,
                 showConfirmButton: false,
-                timer: 3000,
+                timer: 2000,
                 background: "#fef2f2",
                 color: "#991b1b",
                 timerProgressBar: true,
@@ -260,7 +260,7 @@ export default function Map(): JSX.Element {
                                                                     html: "Ha habido un problema al actualizar el favorito.",
                                                                     showConfirmButton:
                                                                         false,
-                                                                    timer: 3000,
+                                                                    timer: 2000,
                                                                     background:
                                                                         "#fef2f2",
                                                                     color: "#991b1b",
@@ -295,7 +295,7 @@ export default function Map(): JSX.Element {
                                                                     html: "Ha habido un problema al actualizar el favorito.",
                                                                     showConfirmButton:
                                                                         false,
-                                                                    timer: 3000,
+                                                                    timer: 2000,
                                                                     background:
                                                                         "#fef2f2",
                                                                     color: "#991b1b",
