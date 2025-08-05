@@ -1,9 +1,6 @@
 package es.unir.authmicroservice.controller;
 
-import es.unir.authmicroservice.dto.AuthResponse;
-import es.unir.authmicroservice.dto.LoginRequest;
-import es.unir.authmicroservice.dto.LoginResult;
-import es.unir.authmicroservice.dto.RegisterRequest;
+import es.unir.authmicroservice.dto.*;
 import es.unir.authmicroservice.service.AuthService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -57,32 +54,27 @@ public class AuthController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/validate")
+    public ResponseEntity<ValidateResponse> validateToken(HttpServletRequest request){
+        String token = getToken(request);
+        return ResponseEntity.ok(authService.validateToken(token));
+    }
+
     @PatchMapping("/favorite-parking")
     public ResponseEntity<AuthResponse> addParkingToFavorites(@RequestParam String parkingId, HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
-        String token = null;
-
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if ("jwt".equals(cookie.getName())) {
-                    token = cookie.getValue();
-                    break;
-                }
-            }
-        }
-
-        if (token == null) {
-            throw new BadCredentialsException("Token inválido");
-        }
-
+        String token = getToken(request);
         return ResponseEntity.ok(authService.addParkingToFavorites(parkingId, token));
     }
 
     @DeleteMapping("/favorite-parking")
     public ResponseEntity<AuthResponse> removeParkingFromFavorites(@RequestParam String parkingId, HttpServletRequest request) {
+        String token = getToken(request);
+        return ResponseEntity.ok(authService.removeParkingFromFavorites(parkingId, token));
+    }
+
+    public String getToken(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
         String token = null;
-
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if ("jwt".equals(cookie.getName())) {
@@ -91,12 +83,7 @@ public class AuthController {
                 }
             }
         }
-
-        if (token == null) {
-            throw new BadCredentialsException("Token inválido");
-        }
-
-        return ResponseEntity.ok(authService.removeParkingFromFavorites(parkingId, token));
+        return token;
     }
 
 }

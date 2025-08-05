@@ -4,8 +4,9 @@ import { DataContext } from "../context/DataContext";
 import { useNavigate } from "react-router-dom";
 import { LocationOn } from "@mui/icons-material";
 import { TextField, Button } from "@mui/material";
+import type { AuthResponse } from "../types/AuthResponse";
 
-export default function AdminLogin() {
+export default function Login() {
     const AUTH_MICROSERVICE_BASE_URL =
         import.meta.env.VITE_AUTH_MICROSERVICE_URL || "http://localhost:8080";
 
@@ -26,18 +27,19 @@ export default function AdminLogin() {
                         "Content-Type": "application/json",
                     },
                     body: JSON.stringify({ email, password }),
+                    credentials: "include",
                 }
             );
 
-            const data = await res.json();
+            const data: AuthResponse = await res.json();
 
             if (!res.ok) {
-                throw new Error(data.message || "Error en el login");
+                throw new Error(
+                    "Error al iniciar sesión, por favor intente de nuevo"
+                );
             }
 
             if (data.role === "ADMIN") {
-                document.cookie = `jwt=${data.token}; path=/; max-age=86400; secure; samesite=Strict`;
-
                 Swal.fire({
                     toast: true,
                     position: isMobile ? "top" : "top-end",
@@ -45,12 +47,12 @@ export default function AdminLogin() {
                     title: "<strong>Inicio de sesión exitoso</strong>",
                     text: "Bienvenido al panel de administración",
                     showConfirmButton: false,
-                    timer: 3000,
+                    timer: 2000,
                     background: "#f0fdf4",
                     color: "#166534",
                     timerProgressBar: true,
                 });
-                navigate("/admin/dashboard");
+                navigate("/dashboard");
             } else {
                 throw new Error(
                     "No tienes permisos para acceder al panel de administración"
@@ -64,7 +66,7 @@ export default function AdminLogin() {
                 title: "<strong>Error de inicio de sesión</strong>",
                 text: err.message || null,
                 showConfirmButton: false,
-                timer: 3000,
+                timer: 2000,
                 background: "#fef2f2",
                 color: "#991b1b",
                 timerProgressBar: true,
