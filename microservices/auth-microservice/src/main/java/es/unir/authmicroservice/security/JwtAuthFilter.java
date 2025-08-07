@@ -3,6 +3,7 @@ package es.unir.authmicroservice.security;
 import es.unir.authmicroservice.model.User;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -33,14 +34,29 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         final String jwt;
         final String userEmail;
 
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            log.debug("Authorization header is missing or does not start with Bearer");
-            filterChain.doFilter(request, response);
-            return;
+        if (authHeader != null || authHeader.startsWith("Bearer ")) {
+            jwt = authHeader.substring(7);
+            log.debug("Extracted JWT from Authorization Header: {}", jwt);
+        } else {
+            Cookie[] cookies = request.getCookies();
+            String jwtCookieValue = null;
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                    if ("jwt".equals(cookie.getName())) {
+                        jwtCookieValue = cookie.getValue();
+                        break;
+                    }
+                }
+            }
+            if (jwtCookieValue != null) {
+                jwt = jwtCookieValue;
+                log.debug("Extracted JWT from Cookie: {}", jwt);
+            } else {
+                log.debug("No JWT found in Authorization Header or Cookies");
+                filterChain.doFilter(request, response);
+                return;
+            }
         }
-
-        jwt = authHeader.substring(7);
-        log.debug("Extracted JWT: {}", jwt);
 
         userEmail = jwtService.extractUsername(jwt);
         log.debug("Extracted user email from JWT: {}", userEmail);
