@@ -41,9 +41,8 @@ public class SecurityConfig {
                         auth -> auth
                                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/parkings/**", "/parking-slots/**").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/parkings", "/parking-slots").hasAuthority("ADMIN")
-                                .requestMatchers(HttpMethod.DELETE, "/parkings/**", "/parking-slots/**").hasAuthority("ADMIN")
-                                .requestMatchers(HttpMethod.PUT, "/parking-slots/**").hasAuthority("ADMIN"))
+                                .requestMatchers("/**").hasAuthority("ADMIN")
+                                .anyRequest().authenticated())
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class).build();
     }

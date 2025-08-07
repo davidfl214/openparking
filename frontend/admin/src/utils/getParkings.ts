@@ -6,10 +6,7 @@ export default async function getParkings(): Promise<Parking[]> {
         "http://localhost:8081";
 
     const response = await fetch(`${PARKING_MICROSERVICE_BASE_URL}/parkings`, {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-        },
+        method: "GET"
     });
 
     if (!response.ok) {
