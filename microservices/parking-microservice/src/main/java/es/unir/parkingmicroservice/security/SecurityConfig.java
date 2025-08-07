@@ -20,7 +20,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.Collections;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -40,10 +39,8 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(
                         auth -> auth
-                                .requestMatchers(HttpMethod.GET, "/parkings/**").permitAll()
-                                .requestMatchers("/parkings/**").hasAuthority("ADMIN")
-                                .requestMatchers(HttpMethod.GET, "/parking-slots/**").permitAll()
-                                .requestMatchers("/parking-slots/**").hasAuthority("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/parkings/**", "/parking-slots/**").permitAll()
+                                .requestMatchers("/**").hasAuthority("ADMIN")
                                 .anyRequest().authenticated())
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class).build();
