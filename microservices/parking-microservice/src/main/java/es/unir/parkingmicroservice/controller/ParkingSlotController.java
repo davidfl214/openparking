@@ -34,14 +34,12 @@ public class ParkingSlotController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<ParkingSlot> updateParkingSlot(@PathVariable String id, @RequestBody ParkingSlot slot) {
         return parkingSlotService.updateSlot(id, slot).map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable String id) {
         parkingSlotService.deleteSlot(id);
         return ResponseEntity.status(HttpStatus.OK).build();
