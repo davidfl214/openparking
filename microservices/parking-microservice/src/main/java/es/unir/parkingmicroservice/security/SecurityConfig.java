@@ -39,6 +39,7 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(
                         auth -> auth
+                                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/parkings/**", "/parking-slots/**").permitAll()
                                 .requestMatchers("/**").hasAuthority("ADMIN")
                                 .anyRequest().authenticated())
