@@ -1,5 +1,5 @@
 import type { JSX } from "react";
-import type { ParkingData } from "../../types/parking";
+import type { ParkingData } from "../types/parking";
 import { Map } from "@mui/icons-material";
 
 export default function ParkingDetailsBox({
@@ -28,10 +28,12 @@ export default function ParkingDetailsBox({
     return (
         <div
             key={parking.id}
-            className={`p-4 rounded-lg shadow-md border-2 flex flex-col gap-2 ${getColorClasses()}`}
+            className={`p-4 rounded-lg shadow-md border-2 flex flex-col gap-2 justify-between ${getColorClasses()}`}
         >
             <h2 className="font-bold text-lg">{parking.name}</h2>
-            <p className="text-gray-600">{parking.location}</p>
+            <p className="text-gray-600 truncate" title={parking.location}>
+                {parking.location}
+            </p>
             <p className="text-md">
                 Total de plazas:{" "}
                 <span className="font-bold">{parking.totalSlots}</span>

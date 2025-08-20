@@ -5,7 +5,7 @@ const RETRY_DELAY_MS = 2000;
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-export const fetchParkingsDetails = async (microserviceUrl: string, id: string): Promise<ParkingSlotData[]> => {
+export const getParkingsDetails = async (microserviceUrl: string, id: string): Promise<ParkingSlotData[]> => {
     let attempt = 0;
     while (attempt < MAX_RETRIES) {
         try {

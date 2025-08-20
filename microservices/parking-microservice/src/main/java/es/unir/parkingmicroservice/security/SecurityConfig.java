@@ -41,6 +41,7 @@ public class SecurityConfig {
                         auth -> auth
                                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/parkings/**", "/parking-slots/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/ws/**").permitAll()
                                 .requestMatchers("/**").hasAuthority("ADMIN")
                                 .anyRequest().authenticated())
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

@@ -2,8 +2,9 @@ import { useContext, useState } from "react";
 import { TextField, Button } from "@mui/material";
 import Swal from "sweetalert2";
 import { LocationContext } from "../context/LocationContext";
-import { Link, useNavigate} from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ArrowBack, LocationOn } from "@mui/icons-material";
+import { AUTH_MICROSERVICE_BASE_URL, MIN_PASSWORD_LENGTH } from "../constants/constants";
 
 export default function Register() {
     const { isMobile } = useContext(LocationContext);
@@ -11,21 +12,54 @@ export default function Register() {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const navigate = useNavigate();
 
-
-    const AUTH_MICROSERVICE_BASE_URL =
-        import.meta.env.VITE_AUTH_MICROSERVICE_URL || "http://localhost:8080";
+    const validateUserInput = (): boolean => {
+        if (!name || !email || !password) {
+            Swal.fire({
+                toast: true,
+                position: isMobile ? "top" : "top-end",
+                icon: "warning",
+                title: "<strong>Campos incompletos</strong>",
+                text: "Por favor, completa todos los campos.",
+                showConfirmButton: false,
+                timer: 2000,
+                background: "#fef2f2",
+                color: "#991b1b",
+                timerProgressBar: true,
+            });
+            return false;
+        }
+        if (password.length < MIN_PASSWORD_LENGTH) {
+            Swal.fire({
+                toast: true,
+                position: isMobile ? "top" : "top-end",
+                icon: "warning",
+                title: "<strong>Contraseña demasiado corta</strong>",
+                text: `La contraseña debe tener al menos ${MIN_PASSWORD_LENGTH} caracteres.`,
+                showConfirmButton: false,
+                timer: 2000,
+                background: "#fef2f2",
+                color: "#991b1b",
+                timerProgressBar: true,
+            });
+            return false;
+        }
+        return true;
+    };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setIsSubmitting(true);
+
+        if (!validateUserInput()) {
+            setIsSubmitting(false);
+            return;
+        }
+
         try {
-            console.log("Enviando datos de registro:", {
-                name,
-                email,
-                password,
-            });
             const response = await fetch(
                 `${AUTH_MICROSERVICE_BASE_URL}/api/auth/register`,
                 {
@@ -33,7 +67,7 @@ export default function Register() {
                     headers: {
                         "Content-Type": "application/json",
                     },
-                    body: JSON.stringify({ name, email, password, }),
+                    body: JSON.stringify({ name, email, password }),
                 }
             );
 
@@ -44,42 +78,21 @@ export default function Register() {
                         "Error intentando registrar el usuario"
                 );
             }
-            const data = await response.json();
 
-            if (data.token) {
-                document.cookie = `jwt=${data.token}; path=/; max-age=86400; secure; samesite=Strict`;
-                console.log("Token guardado:", data.token);
-                Swal.fire({
-                    toast: true,
-                    position: isMobile ? "top" : "top-end",
-                    icon: "success",
-                    title: "<strong>Registro exitoso</strong>",
-                    text: "Usuario registrado correctamente.",
-                    showConfirmButton: false,
-                    timer: 2000,
-                    background: "#f0fdf4",
-                    color: "#166534",
-                    timerProgressBar: true,
-                });
-                console.log("Registro exitoso:", data);
-                console.log("Redirigiendo a la página principal...")
-                navigate("/");
-            } else {
-                Swal.fire({
-                    toast: true,
-                    position: isMobile ? "top" : "top-end",
-                    icon: "info",
-                    title: "<strong>Registro exitoso</strong>",
-                    text: "Usuario registrado correctamente. Ahora puedes iniciar sesión.",
-                    showConfirmButton: false,
-                    timer: 2000,
-                    background: "#f0fdf4",
-                    color: "#166534",
-                    timerProgressBar: true,
-                });
-                console.log("Registro exitoso, pero no se recibió token:", data);
-                navigate("/login");
-            }
+            Swal.fire({
+                toast: true,
+                position: isMobile ? "top" : "top-end",
+                icon: "success",
+                title: "<strong>Registro exitoso</strong>",
+                text: "Usuario registrado correctamente. Ahora puedes iniciar sesión.",
+                showConfirmButton: false,
+                timer: 2000,
+                background: "#f0fdf4",
+                color: "#166534",
+                timerProgressBar: true,
+            });
+
+            navigate("/login");
         } catch (err: any) {
             Swal.fire({
                 toast: true,
@@ -93,7 +106,8 @@ export default function Register() {
                 color: "#991b1b",
                 timerProgressBar: true,
             });
-            console.error("Error al registrar el usuario:", err);
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -155,13 +169,14 @@ export default function Register() {
                     type="submit"
                     fullWidth
                     variant="contained"
+                    disabled={isSubmitting}
                     sx={{
                         m: 1,
                         bgcolor: "var(--color-secondary)",
                         fontWeight: "bold",
                     }}
                 >
-                    Registrarse
+                    {isSubmitting ? "Registrando..." : "Registrarse"}
                 </Button>
 
                 <p className="text-center text-gray-600 m-1">

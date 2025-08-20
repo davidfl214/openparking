@@ -1,5 +1,5 @@
 import type { JSX } from "react";
-import type { ParkingSlotData } from "../../types/parkingSlotData";
+import type { ParkingSlotData } from "../types/parkingSlotData";
 
 export default function ParkingSlotDetailsBox({
     parking,

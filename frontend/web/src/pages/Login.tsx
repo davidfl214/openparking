@@ -5,11 +5,29 @@ import { LocationContext } from "../context/LocationContext";
 import { ArrowBack, LocationOn } from "@mui/icons-material";
 import { Link, useNavigate } from "react-router-dom";
 import type { AuthResponse } from "../types/authResponse";
+import { AUTH_MICROSERVICE_BASE_URL } from "../constants/constants";
+
+const setLocalStorageItems = (response: AuthResponse) => {
+    localStorage.setItem("userRole", response.role || "");
+    localStorage.setItem("userEmail", response.email || "");
+    localStorage.setItem("userName", response.name || "");
+    localStorage.setItem(
+        "parkingFavorites",
+        JSON.stringify(
+            response.parkingFavorites
+                ? Array.from(response.parkingFavorites)
+                : []
+        )
+    );
+
+    const expirationTime = 24 * 60 * 60 * 1000;
+    localStorage.setItem(
+        "expiration",
+        (Date.now() + expirationTime).toString()
+    );
+};
 
 export default function Login() {
-    const AUTH_MICROSERVICE_BASE_URL =
-        import.meta.env.VITE_AUTH_MICROSERVICE_URL || "http://localhost:8080";
-
     const { isMobile, setAuthResponse } = useContext(LocationContext);
 
     const [email, setEmail] = useState("");
@@ -28,7 +46,6 @@ export default function Login() {
                         "Content-Type": "application/json",
                     },
                     body: JSON.stringify({ email, password }),
-                    credentials: "include",
                 }
             );
 
@@ -41,17 +58,7 @@ export default function Login() {
 
             const response: AuthResponse = await res.json();
 
-            localStorage.setItem("userRole", response.role || "");
-            localStorage.setItem("userEmail", response.email || "");
-            localStorage.setItem("userName", response.name || "");
-            localStorage.setItem("parkingFavorites", JSON.stringify(response.parkingFavorites ? Array.from(response.parkingFavorites) : []));
-
-            const expirationTime = 24 * 60 * 60 * 1000
-            localStorage.setItem(
-                "expiration",
-                (Date.now() + expirationTime).toString()
-            );
-
+            setLocalStorageItems(response);
             setAuthResponse(response);
 
             Swal.fire({
@@ -66,6 +73,7 @@ export default function Login() {
                 color: "#166534",
                 timerProgressBar: true,
             });
+
             navigate("/");
         } catch (err: any) {
             Swal.fire({
@@ -88,7 +96,7 @@ export default function Login() {
             <div className="absolute top-4 left-4 laptop:top-6 laptop:left-8">
                 <Link
                     to="/"
-                    className="text-white text-lg font-bold mb-4 flex items-center"
+                    className="text-white text-lg font-bold mb-4 flex items-center hover:underline"
                 >
                     <ArrowBack fontSize="small" className="mr-1" />
                     Volver al mapa

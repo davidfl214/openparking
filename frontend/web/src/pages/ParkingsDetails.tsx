@@ -3,78 +3,68 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import type { ParkingSlotData } from "../types/parkingSlotData";
 import { LocationContext } from "../context/LocationContext";
 import Swal from "sweetalert2";
-import { fetchParkingsDetails } from "../utils/getParkingDetails";
+import { getParkingsDetails } from "../utils/getParkingDetails";
 import { ArrowBack, Refresh } from "@mui/icons-material";
-import ParkingSlotDetailsBox from "../components/parking-details/ParkingSlotDetailsBox";
+import ParkingSlotDetailsBox from "../components/ParkingSlotDetailsBox";
+import { PARKINGS_MICROSERVICE_BASE_URL } from "../constants/constants";
 
 export default function ParkingDetailsPage(): JSX.Element {
-    const PARKINGS_MICROSERVICE_BASE_URL =
-        import.meta.env.VITE_PARKINGS_MICROSERVICE_URL ||
-        "http://localhost:8080";
     const { id } = useParams<{ id: string }>();
     const [parkingInfo, setParkingInfo] = useState<ParkingSlotData[]>([]);
-    const [loading, setLoading] = useState<boolean>(true);
-    const [refreshClicked, setRefreshClicked] = useState<boolean>(false);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
     const { isMobile } = useContext(LocationContext);
     const navigate = useNavigate();
 
-    const handleRefresh = async () => {
-        setRefreshClicked(true);
-        const data = await fetchParkingsDetails(
-            PARKINGS_MICROSERVICE_BASE_URL,
-            id || ""
-        );
-        setParkingInfo(data);
-        setRefreshClicked(false);
-        Swal.fire({
-            toast: true,
-            position: isMobile ? "top" : "top-end",
-            icon: "success",
-            title: "<strong>Datos actualizados</strong>",
-            text: "La información del parking se ha actualizado correctamente.",
-            showConfirmButton: false,
-            timer: 2000,
-            background: "#f0fdf4",
-            color: "#166534",
-            timerProgressBar: true,
-        });
+    const fetchParkingData = async () => {
+        setIsLoading(true);
+        try {
+            if (!id) {
+                navigate("/");
+                return;
+            }
+
+            const data = await getParkingsDetails(
+                PARKINGS_MICROSERVICE_BASE_URL,
+                id
+            );
+
+            setParkingInfo(data);
+
+            Swal.fire({
+                toast: true,
+                position: isMobile ? "top" : "top-end",
+                icon: "success",
+                title: "<strong>Datos actualizados</strong>",
+                text: "La información del parking se ha actualizado correctamente.",
+                showConfirmButton: false,
+                timer: 2000,
+                background: "#f0fdf4",
+                color: "#166534",
+                timerProgressBar: true,
+            });
+        } catch (err: any) {
+            Swal.fire({
+                toast: true,
+                position: isMobile ? "top" : "top-end",
+                icon: "error",
+                title: "<strong>Error al cargar los detalles del parking</strong>",
+                text: err.message || "Error de conexión con el servidor",
+                showConfirmButton: false,
+                timer: 2000,
+                background: "#fef2f2",
+                color: "#991b1b",
+                timerProgressBar: true,
+            });
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     useEffect(() => {
-        if (!id) {
-            navigate("/");
-            return;
-        }
-        const fetchData = async () => {
-            try {
-                const data = await fetchParkingsDetails(
-                    PARKINGS_MICROSERVICE_BASE_URL,
-                    id
-                );
-                setParkingInfo(data);
-            } catch (err: any) {
-                Swal.fire({
-                    toast: true,
-                    position: isMobile ? "top" : "top-end",
-                    icon: "error",
-                    title: "<strong>Error al cargar los detalles del parking</strong>",
-                    text: err.message || "Error de conexión con el servidor",
-                    showConfirmButton: false,
-                    timer: 2000,
-                    background: "#fef2f2",
-                    color: "#991b1b",
-                    timerProgressBar: true,
-                });
-                setLoading(false);
-                return;
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchData();
-    }, [id, navigate, isMobile, PARKINGS_MICROSERVICE_BASE_URL]);
+        fetchParkingData();
+    }, [id, navigate, isMobile]);
 
-    if (parkingInfo.length === 0) {
+    if (isLoading && parkingInfo.length === 0) {
         return (
             <div className="mx-auto p-4 bg-primary h-screen">
                 <div className="flex items-center justify-between laptop:max-w-5xl laptop:mx-auto my-4">
@@ -91,9 +81,9 @@ export default function ParkingDetailsPage(): JSX.Element {
                         <Refresh
                             fontSize="large"
                             className={`text-white cursor-pointer transition-transform duration-500 ${
-                                refreshClicked ? "animate-spin" : ""
+                                isLoading ? "animate-spin" : ""
                             }`}
-                            onClick={handleRefresh}
+                            onClick={fetchParkingData}
                         />
                     </div>
                 </div>
@@ -139,9 +129,9 @@ export default function ParkingDetailsPage(): JSX.Element {
                     <Refresh
                         fontSize="large"
                         className={`text-white cursor-pointer transition-transform duration-500 ${
-                            loading ? "animate-spin" : ""
+                            isLoading ? "animate-spin" : ""
                         }`}
-                        onClick={handleRefresh}
+                        onClick={fetchParkingData}
                     />
                 </div>
             </div>

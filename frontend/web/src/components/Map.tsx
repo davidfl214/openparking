@@ -1,30 +1,25 @@
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import { useGeolocation } from "../../hooks/useGeolocation";
+import { useGeolocation } from "../hooks/useGeolocation";
 import { useContext, useEffect, useRef, useState, type JSX } from "react";
 import { type LatLngTuple } from "leaflet";
 import Swal from "sweetalert2";
-import type { ParkingData } from "../../types/parking";
-import { fetchParkings } from "../../utils/getParkingData";
-import {
-    createStyledMarker,
-    getMarkerColorClass,
-} from "../../utils/markerStyles";
+import type { ParkingData } from "../types/parking";
+import { fetchParkings } from "../utils/getParkingData";
+import { createStyledMarker, getMarkerColorClass } from "../utils/markerStyles";
 import {
     MarkerLocationClickHandler,
     SearchLocationHandler,
     UserLocationHandler,
-} from "../../utils/locationHandler";
+} from "../utils/locationHandler";
 import { Stomp, type Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
-import { LocationContext } from "../../context/LocationContext";
+import { LocationContext } from "../context/LocationContext";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@mui/material";
 import { Directions, Favorite, FavoriteBorder } from "@mui/icons-material";
-import { handleFavoriteButton } from "../../utils/handleFavoriteButton";
-
-const PARKINGS_MICROSERVICE_BASE_URL =
-    import.meta.env.VITE_PARKINGS_MICROSERVICE_URL || "http://localhost:8080";
+import { handleFavoriteButton } from "../utils/handleFavoriteButton";
+import { DEFAULT_COORDINATES, PARKINGS_MICROSERVICE_BASE_URL } from "../constants/constants";
 
 export default function Map(): JSX.Element {
     const {
@@ -143,9 +138,7 @@ export default function Map(): JSX.Element {
         }
     }, [locationError]);
 
-    const defaultCenter: LatLngTuple = [
-        40.416918404895505, -3.7034907813021767,
-    ];
+    const defaultCenter: LatLngTuple = DEFAULT_COORDINATES;
 
     return (
         <MapContainer
