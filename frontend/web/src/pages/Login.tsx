@@ -66,7 +66,7 @@ export default function Login() {
                 position: isMobile ? "top" : "top-end",
                 icon: "success",
                 title: "<strong>Inicio de sesión exitoso</strong>",
-                text: "Bienvenido de nuevo",
+                text: `Bienvenido de nuevo, ${response.name}`,
                 showConfirmButton: false,
                 timer: 2000,
                 background: "#f0fdf4",

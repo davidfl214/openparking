@@ -1,7 +1,5 @@
+import { AUTH_MICROSERVICE_BASE_URL } from "../constants/constants";
 import type { AuthResponse } from "../types/authResponse";
-
-const AUTH_MICROSERVICE_BASE_URL =
-    import.meta.env.VITE_AUTH_MICROSERVICE_URL;
 
 export const handleFavoriteButton = async (
     parkingId: string, 
