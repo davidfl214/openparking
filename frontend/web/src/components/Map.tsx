@@ -18,6 +18,7 @@ import { Directions, Favorite, FavoriteBorder } from "@mui/icons-material";
 import { handleFavoriteButton } from "../utils/handleFavoriteButton";
 import { DEFAULT_COORDINATES } from "../constants/constants";
 import { useMapData } from "../hooks/useMapData";
+import { getUserFavoritesParkings } from "../utils/getUserFavoritesParkings";
 
 export default function Map(): JSX.Element {
     const {
@@ -27,14 +28,23 @@ export default function Map(): JSX.Element {
         isMobile,
         setParkingData,
         authResponse,
-        setAuthResponse,
     } = useContext(LocationContext);
     const { position: userLocation, error: locationError } = useGeolocation();
     const { loading } = useMapData(setParkingData, isMobile);
     const [markerLocation, setMarkerLocation] = useState<LatLngTuple | null>(
         null
     );
+    const [parkingFavorites, setParkingFavorites] = useState<string[]>([]);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const fetchFavorites = async () => {
+            const favorites = await getUserFavoritesParkings();
+            setParkingFavorites(favorites);
+        };
+
+        fetchFavorites();
+    }, []);
 
     useEffect(() => {
         if (locationError) {
@@ -139,8 +149,8 @@ export default function Map(): JSX.Element {
                                                 }}
                                             />
                                             {authResponse &&
-                                                (authResponse.parkingFavorites &&
-                                                authResponse.parkingFavorites.includes(
+                                                (parkingFavorites &&
+                                                parkingFavorites.includes(
                                                     parking.id
                                                 ) ? (
                                                     <Favorite
@@ -153,8 +163,8 @@ export default function Map(): JSX.Element {
                                                             try {
                                                                 await handleFavoriteButton(
                                                                     parking.id,
-                                                                    authResponse,
-                                                                    setAuthResponse
+                                                                    true,
+                                                                    setParkingFavorites
                                                                 );
                                                             } catch (error) {
                                                                 Swal.fire({
@@ -188,8 +198,8 @@ export default function Map(): JSX.Element {
                                                             try {
                                                                 await handleFavoriteButton(
                                                                     parking.id,
-                                                                    authResponse,
-                                                                    setAuthResponse
+                                                                    false,
+                                                                    setParkingFavorites
                                                                 );
                                                             } catch (error) {
                                                                 Swal.fire({

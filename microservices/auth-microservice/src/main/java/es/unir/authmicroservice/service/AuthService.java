@@ -32,8 +32,7 @@ public class AuthService {
         newUser.setRole(Role.USER);
         userRepository.save(newUser);
 
-        return AuthResponse.builder().role(newUser.getRole()).email(newUser.getEmail()).name(newUser.getName())
-                .parkingFavorites(newUser.getFavoritesParkings()).build();
+        return AuthResponse.builder().role(newUser.getRole()).email(newUser.getEmail()).name(newUser.getName()).build();
     }
 
     public LoginResult login(LoginRequest request) {
@@ -47,7 +46,21 @@ public class AuthService {
                 .parkingFavorites(user.getFavoritesParkings()).build();
     }
 
-    public AuthResponse addParkingToFavorites(String parkingId, String token) {
+    public ParkingFavoritesResponse getFavoriteParkings(String token) {
+        String userEmail = jwtService.extractUsername(token);
+        if (userEmail == null) {
+            throw new BadCredentialsException("Token inválido");
+        }
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new BadCredentialsException("Usuario no encontrado"));
+        if (!jwtService.isTokenValid(token, user)) {
+            throw new BadCredentialsException("Token inválido");
+        }
+
+        return ParkingFavoritesResponse.builder().parkingFavorites(user.getFavoritesParkings()).build();
+    }
+
+    public ParkingFavoritesResponse addParkingToFavorites(String parkingId, String token) {
         String userEmail = jwtService.extractUsername(token);
         if (userEmail == null) {
             throw new BadCredentialsException("Token inválido");
@@ -69,11 +82,10 @@ public class AuthService {
         user.getFavoritesParkings().add(parkingId);
         userRepository.save(user);
 
-        return AuthResponse.builder().role(user.getRole()).email(user.getEmail()).name(user.getName())
-                .parkingFavorites(user.getFavoritesParkings()).build();
+        return ParkingFavoritesResponse.builder().parkingFavorites(user.getFavoritesParkings()).build();
     }
 
-    public AuthResponse removeParkingFromFavorites(String parkingId, String token) {
+    public ParkingFavoritesResponse removeParkingFromFavorites(String parkingId, String token) {
         String userEmail = jwtService.extractUsername(token);
         if (userEmail == null) {
             throw new BadCredentialsException("Token inválido");
@@ -88,8 +100,7 @@ public class AuthService {
         }
         userRepository.save(user);
 
-        return AuthResponse.builder().role(user.getRole()).email(user.getEmail()).name(user.getName())
-                .parkingFavorites(user.getFavoritesParkings()).build();
+        return ParkingFavoritesResponse.builder().parkingFavorites(user.getFavoritesParkings()).build();
     }
 
     public ValidateResponse validateToken(String token) {

@@ -7,6 +7,7 @@ import ParkingDetailsBox from "../components/ParkingDetailsBox";
 import type { ParkingData } from "../types/parking";
 import { Button } from "@mui/material";
 import { PARKINGS_MICROSERVICE_BASE_URL } from "../constants/constants";
+import { getUserFavoritesParkings } from "../utils/getUserFavoritesParkings";
 
 const removeLocalStorageItems = (): void => {
     localStorage.removeItem("userRole");
@@ -44,12 +45,15 @@ export default function Profile(): JSX.Element | null {
     };
 
     const getFavoriteParkings = async (): Promise<void> => {
+
+        const parkingFavorites: string[] = await getUserFavoritesParkings();
+
         if (
-            authResponse?.parkingFavorites &&
-            authResponse.parkingFavorites.length > 0
+            parkingFavorites &&
+            parkingFavorites.length > 0
         ) {
             try {
-                const parkingStatuses = authResponse.parkingFavorites.map(
+                const parkingStatuses = parkingFavorites.map(
                     async (parkingId) => {
                         const response = await fetch(
                             `${PARKINGS_MICROSERVICE_BASE_URL}/parkings/${parkingId}/status`

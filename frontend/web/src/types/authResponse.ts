@@ -3,5 +3,4 @@ export interface AuthResponse {
     email: string | null;
     name: string | null;
     expirationDate: string | null;
-    parkingFavorites: string[] | null;
 }

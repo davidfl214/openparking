@@ -38,7 +38,8 @@ public class AuthController {
 
         response.addCookie(jwtCookie);
 
-        return ResponseEntity.ok(AuthResponse.builder().role(loginResult.getRole()).name(loginResult.getName()).email(loginResult.getEmail()).parkingFavorites(loginResult.getParkingFavorites()).build());
+        return ResponseEntity.ok(AuthResponse.builder().role(loginResult.getRole()).name(loginResult.getName())
+                .email(loginResult.getEmail()).build());
     }
 
     @PostMapping("/logout")
@@ -55,7 +56,7 @@ public class AuthController {
     }
 
     @PostMapping("/validate")
-    public ResponseEntity<ValidateResponse> validateToken(HttpServletRequest request){
+    public ResponseEntity<ValidateResponse> validateToken(HttpServletRequest request) {
         String token = getToken(request);
         if (token == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -63,14 +64,22 @@ public class AuthController {
         return ResponseEntity.ok(authService.validateToken(token));
     }
 
+    @GetMapping("/favorite-parkings")
+    public ResponseEntity<ParkingFavoritesResponse> getFavoriteParkings(HttpServletRequest request) {
+        String token = getToken(request);
+        return ResponseEntity.ok(authService.getFavoriteParkings(token));
+    }
+
     @PatchMapping("/favorite-parking")
-    public ResponseEntity<AuthResponse> addParkingToFavorites(@RequestParam String parkingId, HttpServletRequest request) {
+    public ResponseEntity<ParkingFavoritesResponse> addParkingToFavorites(@RequestParam String parkingId,
+                                                                          HttpServletRequest request) {
         String token = getToken(request);
         return ResponseEntity.ok(authService.addParkingToFavorites(parkingId, token));
     }
 
     @DeleteMapping("/favorite-parking")
-    public ResponseEntity<AuthResponse> removeParkingFromFavorites(@RequestParam String parkingId, HttpServletRequest request) {
+    public ResponseEntity<ParkingFavoritesResponse> removeParkingFromFavorites(@RequestParam String parkingId,
+                                                                               HttpServletRequest request) {
         String token = getToken(request);
         return ResponseEntity.ok(authService.removeParkingFromFavorites(parkingId, token));
     }

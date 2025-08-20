@@ -1,18 +1,10 @@
 import { AUTH_MICROSERVICE_BASE_URL } from "../constants/constants";
-import type { AuthResponse } from "../types/authResponse";
 
 export const handleFavoriteButton = async (
-    parkingId: string, 
-    authResponse: AuthResponse,
-    setAuthResponse: (authResponse: AuthResponse) => void
+    parkingId: string,
+    isFavorite: boolean,
+    setParkingFavorites: React.Dispatch<React.SetStateAction<string[]>>
 ) => {
-    if (!authResponse) {
-        console.error("User is not authenticated.");
-        return;
-    }
-
-    const isFavorite = authResponse.parkingFavorites?.includes(parkingId);
-
     const method = isFavorite ? "DELETE" : "PATCH";
     const actionText = isFavorite ? "removing" : "adding";
 
@@ -34,29 +26,7 @@ export const handleFavoriteButton = async (
         );
     }
 
-    if (isFavorite) {
-        localStorage.setItem(
-            "parkingFavorites",
-            JSON.stringify(
-                authResponse.parkingFavorites?.filter((id) => id !== parkingId)
-            )
-        );
+    const parkingFavorites = await res.json();
 
-        const updatedAuthResponse = {
-            ...authResponse,
-            parkingFavorites: authResponse.parkingFavorites?.filter((id) => id !== parkingId) ?? null
-        };
-        setAuthResponse(updatedAuthResponse);
-    } else {
-        localStorage.setItem(
-            "parkingFavorites",
-            JSON.stringify([...authResponse.parkingFavorites || [], parkingId])
-        );
-
-        const updatedAuthResponse = {
-            ...authResponse,
-            parkingFavorites: [...(authResponse.parkingFavorites || []), parkingId]
-        };
-        setAuthResponse(updatedAuthResponse);
-    }
+    setParkingFavorites(parkingFavorites);
 };
