@@ -62,7 +62,7 @@ export default function ParkingDetailsPage(): JSX.Element {
 
     useEffect(() => {
         fetchParkingData();
-    }, [id, navigate, isMobile]);
+    }, [id, isMobile]);
 
     if (isLoading && parkingInfo.length === 0) {
         return (

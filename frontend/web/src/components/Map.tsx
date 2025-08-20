@@ -1,25 +1,23 @@
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { useGeolocation } from "../hooks/useGeolocation";
-import { useContext, useEffect, useRef, useState, type JSX } from "react";
+import { useContext, useEffect, useState, type JSX } from "react";
 import { type LatLngTuple } from "leaflet";
 import Swal from "sweetalert2";
 import type { ParkingData } from "../types/parking";
-import { fetchParkings } from "../utils/getParkingData";
 import { createStyledMarker, getMarkerColorClass } from "../utils/markerStyles";
 import {
     MarkerLocationClickHandler,
     SearchLocationHandler,
     UserLocationHandler,
 } from "../utils/locationHandler";
-import { Stomp, type Client } from "@stomp/stompjs";
-import SockJS from "sockjs-client";
 import { LocationContext } from "../context/LocationContext";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@mui/material";
 import { Directions, Favorite, FavoriteBorder } from "@mui/icons-material";
 import { handleFavoriteButton } from "../utils/handleFavoriteButton";
-import { DEFAULT_COORDINATES, PARKINGS_MICROSERVICE_BASE_URL } from "../constants/constants";
+import { DEFAULT_COORDINATES } from "../constants/constants";
+import { useMapData } from "../hooks/useMapData";
 
 export default function Map(): JSX.Element {
     const {
@@ -32,94 +30,11 @@ export default function Map(): JSX.Element {
         setAuthResponse,
     } = useContext(LocationContext);
     const { position: userLocation, error: locationError } = useGeolocation();
-    const [loading, setLoading] = useState<boolean>(true);
+    const { loading } = useMapData(setParkingData, isMobile);
     const [markerLocation, setMarkerLocation] = useState<LatLngTuple | null>(
         null
     );
-    const stompClientRef = useRef<Client | null>(null);
     const navigate = useNavigate();
-
-    useEffect(() => {
-        let stompClient: Client | null = null;
-
-        const loadInitialParkings = async (): Promise<void> => {
-            try {
-                const data = await fetchParkings(
-                    PARKINGS_MICROSERVICE_BASE_URL
-                );
-                setParkingData(data);
-            } catch (error) {
-                Swal.fire({
-                    toast: true,
-                    position: isMobile ? "top" : "top-end",
-                    icon: "error",
-                    title: "<strong>Failed to load initial parking data</strong>",
-                    showConfirmButton: false,
-                    timer: 2000,
-                    background: "#fef2f2",
-                    color: "#991b1b",
-                    timerProgressBar: true,
-                });
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        const connectWebSocket = () => {
-            const socket = new SockJS(`${PARKINGS_MICROSERVICE_BASE_URL}/ws`);
-            stompClient = Stomp.over(socket);
-
-            stompClientRef.current = stompClient;
-
-            stompClient.debug = () => {};
-
-            stompClient.onConnect = () => {
-                stompClient?.subscribe("/topic/parkingStatus", (message) => {
-                    const updatedParking: ParkingData = JSON.parse(
-                        message.body
-                    );
-                    setParkingData((prevParkings) => {
-                        const existingIndex = prevParkings.findIndex(
-                            (p) => p.id === updatedParking.id
-                        );
-                        if (existingIndex > -1) {
-                            const newParkings = [...prevParkings];
-                            newParkings[existingIndex] = updatedParking;
-                            return newParkings;
-                        } else {
-                            return [...prevParkings, updatedParking];
-                        }
-                    });
-                });
-            };
-
-            stompClient.onStompError = () => {
-                Swal.fire({
-                    toast: true,
-                    position: isMobile ? "top" : "top-end",
-                    icon: "error",
-                    title: "<strong>WebSocket Error</strong>",
-                    html: "Could not connect to real-time updates. Please refresh.",
-                    showConfirmButton: false,
-                    timer: 2000,
-                    background: "#fef2f2",
-                    color: "#991b1b",
-                    timerProgressBar: true,
-                });
-            };
-
-            stompClient.activate();
-        };
-
-        loadInitialParkings();
-        connectWebSocket();
-
-        return () => {
-            if (stompClientRef.current?.connected) {
-                stompClientRef.current.deactivate();
-            }
-        };
-    }, []);
 
     useEffect(() => {
         if (locationError) {
