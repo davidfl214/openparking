@@ -23,6 +23,7 @@ export default function Profile(): JSX.Element | null {
         ParkingData[]
     >([]);
     const [loggingOut, setLoggingOut] = useState<boolean>(false);
+    const [parkingFavorites, setParkingFavorites] = useState<string[]>([]);
     const navigate = useNavigate();
 
     const checkAuth = (): void => {
@@ -43,9 +44,18 @@ export default function Profile(): JSX.Element | null {
         }
     };
 
-    const getFavoriteParkings = async (): Promise<void> => {
+    useEffect(() => {
+        const fetchFavorites = async () => {
+            const favorites = await getUserFavoritesParkings();
+            setParkingFavorites(favorites);
+        };
+        
+        if (authResponse) {
+            fetchFavorites();
+        }
+    }, [authResponse]);
 
-        const parkingFavorites: string[] = await getUserFavoritesParkings();
+    const getFavoriteParkings = async (): Promise<void> => {
 
         if (
             parkingFavorites &&
