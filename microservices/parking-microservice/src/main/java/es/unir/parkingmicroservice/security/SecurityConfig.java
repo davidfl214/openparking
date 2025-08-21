@@ -40,7 +40,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         auth -> auth
                                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/parkings/**", "/parking-slots/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/parkings/**", "/api/parking-slots/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/ws/**").permitAll()
                                 .requestMatchers("/**").hasAuthority("ADMIN")
                                 .anyRequest().authenticated())

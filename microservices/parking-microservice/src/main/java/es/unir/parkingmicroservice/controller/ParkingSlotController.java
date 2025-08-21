@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/parking-slots")
+@RequestMapping("/api/parking-slots")
 @RequiredArgsConstructor
 public class ParkingSlotController {
 
