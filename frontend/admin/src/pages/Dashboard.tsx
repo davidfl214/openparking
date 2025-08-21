@@ -324,8 +324,8 @@ export default function Dashboard() {
                                         }}
                                         className="bg-[#2c3e50] text-white border border-[#4a6572] p-2 rounded-md focus:outline-none"
                                     >
-                                        <option value="USER">User</option>
-                                        <option value="ADMIN">Admin</option>
+                                        <option value="USER">USER</option>
+                                        <option value="ADMIN">ADMIN</option>
                                     </select>
                                 </div>
                             </div>

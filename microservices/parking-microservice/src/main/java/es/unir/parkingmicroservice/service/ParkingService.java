@@ -65,6 +65,7 @@ public class ParkingService {
             parkingRepository.deleteById(id);
 
             sendParkingConfigurationEvent(id, null, null, DELETE_PARKING_TYPE);
+            messagingTemplate.convertAndSend("/topic/deletedParking", id);
         } else {
             throw new IllegalArgumentException("Parking with id " + id + " does not exist");
         }
@@ -92,6 +93,14 @@ public class ParkingService {
 
         sendParkingConfigurationEvent(id, null, null, DELETE_PARKING_TYPE);
         sendParkingConfigurationEvent(id, existingParking.getNumberOfFloors(), existingParking.getSlotsPerFloor(), ADD_PARKING_TYPE);
+
+        List<ParkingSlot> parkingSlots = parkingSlotService.getParkingSlotsByParkingId(existingParking.getId());
+        int occupiedSlots = (int) parkingSlots.stream().filter(ParkingSlot::isOccupied).count();
+        ParkingStatus status = ParkingStatus.builder().id(existingParking.getId()).name(existingParking.getName())
+                .location(existingParking.getLocation()).latitude(existingParking.getLatitude())
+                .longitude(existingParking.getLongitude()).totalSlots(existingParking.getSlotsPerFloor()).occupiedSlots(occupiedSlots)
+                .enabled(existingParking.isEnabled()).build();
+        messagingTemplate.convertAndSend("/topic/parkingStatus", status);
     }
 
     public List<ParkingStatus> getAllParkingStatus() {
