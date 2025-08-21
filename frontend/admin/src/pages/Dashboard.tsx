@@ -167,8 +167,8 @@ export default function Dashboard() {
     const handleCreateParking = async (parking: Parking) => {
         try {
             setLoading(true);
-            const newParking = await createParking(parking);
-            setParkings([...parkings, newParking]);
+            await createParking(parking);
+            setParkings(await getParkings());
             setShowAddParkingModal(false);
             setCreatingParkingData({});
             Swal.fire({
@@ -205,11 +205,7 @@ export default function Dashboard() {
         try {
             setLoading(true);
             await updateParking(parking);
-            setParkings(
-                parkings.map((p) =>
-                    p.id === parking.id ? { ...p, ...editedParkingData } : p
-                )
-            );
+            setParkings(await getParkings());
             Swal.fire({
                 toast: true,
                 position: isMobile ? "top" : "top-end",
@@ -246,7 +242,7 @@ export default function Dashboard() {
         try {
             setLoading(true);
             await deleteParking(parkingId);
-            setParkings(parkings.filter((p) => p.id !== parkingId));
+            setParkings(await getParkings());
             Swal.fire({
                 toast: true,
                 position: isMobile ? "top" : "top-end",
