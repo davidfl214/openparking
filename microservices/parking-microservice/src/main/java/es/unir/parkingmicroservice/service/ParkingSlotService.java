@@ -19,7 +19,6 @@ import java.util.Optional;
 public class ParkingSlotService {
 
     private final ParkingSlotRepository parkingSlotRepository;
-    private final ParkingService parkingService;
     private final SimpMessagingTemplate messagingTemplate;
 
     public void generateInitialParkingSlots(Parking parking) {
