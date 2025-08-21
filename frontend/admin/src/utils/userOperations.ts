@@ -16,7 +16,6 @@ export const updateUser = async (user: User) => {
             throw new Error(`Error al actualizar el usuario: ${user.name}`);
         }
         
-        return await response.json();
     } catch (err) {
         throw new Error(`Error al actualizar el usuario: ${user.name}`);
     }
@@ -33,7 +32,6 @@ export const deleteUser = async (userId: string) => {
             throw new Error(`Error al borrar el usuario con ID: ${userId}`);
         }
 
-        return await response.json();
     } catch (err) {
         throw new Error(`Error al borrar el usuario con ID: ${userId}`);
     }

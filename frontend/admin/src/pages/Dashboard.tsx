@@ -89,6 +89,7 @@ export default function Dashboard() {
         try {
             setLoading(true);
             await updateUser(user);
+            setUsers(await getUsers());
             Swal.fire({
                 toast: true,
                 position: isMobile ? "top" : "top-end",
@@ -123,7 +124,7 @@ export default function Dashboard() {
         try {
             setLoading(true);
             await deleteUser(userId);
-            setUsers(users.filter((user) => user.id !== userId));
+            setUsers(await getUsers());
             Swal.fire({
                 toast: true,
                 position: isMobile ? "top" : "top-end",
