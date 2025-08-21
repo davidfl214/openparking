@@ -35,11 +35,6 @@ public class ParkingService {
         return parkingRepository.findAll();
     }
 
-    public Parking getParkingById(String id) {
-        return parkingRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Parking with id " + id + " does not exist"));
-    }
-
     @Transactional
     public void createParking(ParkingDTO newParking) {
         if (parkingRepository.existsByAdministratorEmail(newParking.getAdministratorEmail())) {

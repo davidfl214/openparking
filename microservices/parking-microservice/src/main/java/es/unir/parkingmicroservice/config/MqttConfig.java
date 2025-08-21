@@ -1,6 +1,5 @@
 package es.unir.parkingmicroservice.config;
 
-import es.unir.parkingmicroservice.service.ParkingService;
 import es.unir.parkingmicroservice.service.ParkingSlotService;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.springframework.beans.factory.annotation.Value;
@@ -82,8 +81,8 @@ public class MqttConfig {
 
     @Bean
     @ServiceActivator(inputChannel = "mqttInputChannel")
-    public MessageHandler handler(ParkingSlotService parkingSlotService, ParkingService parkingService) {
-        return new MqttMessageHandler(parkingSlotService, parkingService);
+    public MessageHandler handler(ParkingSlotService parkingSlotService) {
+        return new MqttMessageHandler(parkingSlotService);
     }
 
     @Bean

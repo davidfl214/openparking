@@ -26,7 +26,7 @@ public class ParkingSlotService {
         for (int floor = 1; floor <= parking.getNumberOfFloors(); floor++) {
             for (int slot = 1; slot <= parking.getSlotsPerFloor(); slot++) {
                 ParkingSlot parkingSlot =
-                        ParkingSlot.builder().parkingId(parking.getId()).floor(floor).slot(slot).isOccupied(false).build();
+                        ParkingSlot.builder().parking(parking).floor(floor).slot(slot).isOccupied(false).build();
                 parkingSlots.add(parkingSlot);
             }
         }
@@ -61,7 +61,7 @@ public class ParkingSlotService {
 
     public Optional<ParkingSlot> updateSlot(String id, ParkingSlot updatedSlot) {
         return parkingSlotRepository.findById(id).map(existing -> {
-            existing.setParkingId(updatedSlot.getParkingId());
+            existing.setParking(updatedSlot.getParking());
             existing.setFloor(updatedSlot.getFloor());
             existing.setSlot(updatedSlot.getSlot());
             existing.setOccupied(updatedSlot.isOccupied());
@@ -80,7 +80,7 @@ public class ParkingSlotService {
 
     @Transactional
     public void updateSlotOccupancy(String parkingId, Integer floor, Integer slot, boolean isOccupied,
-                                    LocalDateTime messageTimestamp, Parking associatedParking) {
+                                    LocalDateTime messageTimestamp) {
         try {
             Optional<ParkingSlot> slotOptional =
                     parkingSlotRepository.findByParkingIdAndFloorAndSlot(parkingId, floor, slot);
@@ -94,7 +94,8 @@ public class ParkingSlotService {
                 parkingSlot.setOccupied(isOccupied);
                 parkingSlot.setLastUpdated(messageTimestamp);
                 parkingSlotRepository.save(parkingSlot);
-                
+
+                Parking associatedParking = parkingSlot.getParking();
                 if (associatedParking != null) {
                     List<ParkingSlot> parkingSlots = getParkingSlotsByParkingId(associatedParking.getId());
                     int occupiedSlots = (int) parkingSlots.stream().filter(ParkingSlot::isOccupied).count();
