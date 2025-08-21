@@ -79,15 +79,19 @@ public class ParkingService {
             throw new IllegalArgumentException("Parking with this administrator email already exists");
         }
 
-        Parking updatedEntity = ParkingMapper.toEntity(updatedParking);
+        existingParking.setName(updatedParking.getName());
+        existingParking.setLocation(updatedParking.getLocation());
+        existingParking.setLatitude(updatedParking.getLatitude());
+        existingParking.setLongitude(updatedParking.getLongitude());
+        existingParking.setNumberOfFloors(updatedParking.getNumberOfFloors());
+        existingParking.setSlotsPerFloor(updatedParking.getSlotsPerFloor());
+        existingParking.setAdministratorEmail(updatedParking.getAdministratorEmail());
+        existingParking.setEnabled(updatedParking.isEnabled());
 
-        parkingRepository.deleteById(existingParking.getId());
+        parkingRepository.save(existingParking);
+
         sendParkingConfigurationEvent(id, null, null, DELETE_PARKING_TYPE);
-
-        updatedEntity.setId(id);
-        parkingRepository.save(updatedEntity);
-
-        sendParkingConfigurationEvent(id, updatedEntity.getNumberOfFloors(), updatedEntity.getSlotsPerFloor(), ADD_PARKING_TYPE);
+        sendParkingConfigurationEvent(id, existingParking.getNumberOfFloors(), existingParking.getSlotsPerFloor(), ADD_PARKING_TYPE);
     }
 
     public List<ParkingStatus> getAllParkingStatus() {
