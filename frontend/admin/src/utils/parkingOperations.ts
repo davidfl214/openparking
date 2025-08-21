@@ -19,13 +19,12 @@ export const createParking = async (parking: Parking) => {
         });
 
         if (!response.ok) {
-            console.log(await response.text());
             throw new Error(`Error al crear el parking`);
         }
 
-        return await response.json();
+        const data = await response.json();
+        return data;
     } catch (err) {
-        console.log(err);
         throw new Error(`Error al crear el parking`);
     }
 };
@@ -68,7 +67,9 @@ export const deleteParking = async (parkingId: string) => {
             throw new Error(`Error al borrar el parking con ID: ${parkingId}`);
         }
 
-        return await response.json();
+        const data = await response.json();
+
+        return data;
     } catch (err) {
         throw new Error(`Error al borrar el parking con ID: ${parkingId}`);
     }
