@@ -80,10 +80,13 @@ public class ParkingService {
         }
 
         Parking updatedEntity = ParkingMapper.toEntity(updatedParking);
+
+        parkingRepository.deleteById(existingParking.getId());
+        sendParkingConfigurationEvent(id, null, null, DELETE_PARKING_TYPE);
+
         updatedEntity.setId(id);
         parkingRepository.save(updatedEntity);
 
-        sendParkingConfigurationEvent(id, null, null, DELETE_PARKING_TYPE);
         sendParkingConfigurationEvent(id, updatedEntity.getNumberOfFloors(), updatedEntity.getSlotsPerFloor(), ADD_PARKING_TYPE);
     }
 
