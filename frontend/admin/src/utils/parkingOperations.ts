@@ -19,11 +19,13 @@ export const createParking = async (parking: Parking) => {
         });
 
         if (!response.ok) {
+            console.log(await response.text());
             throw new Error(`Error al crear el parking`);
         }
 
         return await response.json();
     } catch (err) {
+        console.log(err);
         throw new Error(`Error al crear el parking`);
     }
 };

@@ -424,6 +424,36 @@ export default function Dashboard() {
                                         className="w-full p-2 bg-[#2c3e50] border border-[#4a6572] text-white rounded"
                                         required
                                     />
+                                    <label className="block">Latitud:</label>
+                                    <input
+                                        type="text"
+                                        value={
+                                            creatingParkingData.latitude || ""
+                                        }
+                                        onChange={(e) =>
+                                            setCreatingParkingData({
+                                                ...creatingParkingData,
+                                                latitude: Number(e.target.value),
+                                            })
+                                        }
+                                        className="w-full p-2 bg-[#2c3e50] border border-[#4a6572] text-white rounded"
+                                        required
+                                    />
+                                    <label className="block">Longitud:</label>
+                                    <input
+                                        type="text"
+                                        value={
+                                            creatingParkingData.longitude || ""
+                                        }
+                                        onChange={(e) =>
+                                            setCreatingParkingData({
+                                                ...creatingParkingData,
+                                                longitude: Number(e.target.value),
+                                            })
+                                        }
+                                        className="w-full p-2 bg-[#2c3e50] border border-[#4a6572] text-white rounded"
+                                        required
+                                    />
                                     <label className="block">Plantas:</label>
                                     <input
                                         type="number"
