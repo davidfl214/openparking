@@ -239,13 +239,15 @@ export default function Profile(): JSX.Element | null {
                     />
                 ) : (
                     <div className="grid grid-cols-1 tablet:grid-cols-2 laptop:grid-cols-3 gap-4 max-w-[90%] tablet:max-w-6xl w-full">
-                        {favoriteParkingsData.length > 0 ? (
-                            favoriteParkingsData.map((parking) => (
-                                <ParkingDetailsBox
-                                    key={parking.id}
-                                    parking={parking}
-                                />
-                            ))
+                        {favoriteParkingsData.filter(parking => parking.enabled).length > 0 ? (
+                            favoriteParkingsData
+                                .filter(parking => parking.enabled)
+                                .map((parking) => (
+                                    <ParkingDetailsBox
+                                        key={parking.id}
+                                        parking={parking}
+                                    />
+                                ))
                         ) : (
                             <p className="text-white">
                                 No tienes parkings favoritos.
