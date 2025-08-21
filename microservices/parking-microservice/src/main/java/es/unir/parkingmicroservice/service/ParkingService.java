@@ -70,6 +70,23 @@ public class ParkingService {
         }
     }
 
+    public void updateParking(String id, ParkingCreateDTO updatedParking) {
+        Parking existingParking = parkingRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Parking with id " + id + " does not exist"));
+
+        if (!existingParking.getAdministratorEmail().equals(updatedParking.getAdministratorEmail()) &&
+                parkingRepository.existsByAdministratorEmail(updatedParking.getAdministratorEmail())) {
+            throw new IllegalArgumentException("Parking with this administrator email already exists");
+        }
+
+        Parking updatedEntity = ParkingMapper.toEntity(updatedParking);
+        updatedEntity.setId(id);
+        parkingRepository.save(updatedEntity);
+
+        sendParkingConfigurationEvent(id, null, null, DELETE_PARKING_TYPE);
+        sendParkingConfigurationEvent(id, updatedEntity.getNumberOfFloors(), updatedEntity.getSlotsPerFloor(), ADD_PARKING_TYPE);
+    }
+
     public List<ParkingStatus> getAllParkingStatus() {
         List<Parking> parkings = parkingRepository.findAll();
         List<ParkingStatus> parkingSlotStatuses = new ArrayList<>();

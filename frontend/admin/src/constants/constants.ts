@@ -1,0 +1,5 @@
+export const PARKINGS_MICROSERVICE_BASE_URL = import.meta.env
+    .VITE_PARKINGS_MICROSERVICE_URL;
+export const AUTH_MICROSERVICE_BASE_URL = import.meta.env
+    .VITE_AUTH_MICROSERVICE_URL;
+

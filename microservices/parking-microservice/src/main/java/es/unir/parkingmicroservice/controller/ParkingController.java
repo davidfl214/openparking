@@ -36,6 +36,12 @@ public class ParkingController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> updateParking(@PathVariable("id") String id, @Valid @RequestBody ParkingCreateDTO updatedParking) {
+        parkingService.updateParking(id, updatedParking);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
     @GetMapping("/status")
     public ResponseEntity<List<ParkingStatus>> getAllParkingStatus() {
         return ResponseEntity.ok(parkingService.getAllParkingStatus());
