@@ -2,7 +2,7 @@ import { useContext, useEffect, useState, type JSX } from "react";
 import { LocationContext } from "../context/LocationContext";
 import Swal from "sweetalert2";
 import { Link, useNavigate } from "react-router-dom";
-import { AccountCircle, ArrowBack, Email } from "@mui/icons-material";
+import { AccountCircle, ArrowBack, Email, Refresh } from "@mui/icons-material";
 import ParkingDetailsBox from "../components/ParkingDetailsBox";
 import type { ParkingData } from "../types/parking";
 import { Button } from "@mui/material";
@@ -24,6 +24,7 @@ export default function Profile(): JSX.Element | null {
     >([]);
     const [loggingOut, setLoggingOut] = useState<boolean>(false);
     const [parkingFavorites, setParkingFavorites] = useState<string[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
     const navigate = useNavigate();
 
     const checkAuth = (): void => {
@@ -46,21 +47,19 @@ export default function Profile(): JSX.Element | null {
 
     useEffect(() => {
         const fetchFavorites = async () => {
+            setLoading(true);
             const favorites = await getUserFavoritesParkings();
             setParkingFavorites(favorites);
+            setLoading(false);
         };
-        
+
         if (authResponse) {
             fetchFavorites();
         }
     }, [authResponse]);
 
     const getFavoriteParkings = async (): Promise<void> => {
-
-        if (
-            parkingFavorites &&
-            parkingFavorites.length > 0
-        ) {
+        if (parkingFavorites && parkingFavorites.length > 0) {
             try {
                 const parkingStatuses = parkingFavorites.map(
                     async (parkingId) => {
@@ -231,7 +230,14 @@ export default function Profile(): JSX.Element | null {
                     Parkings favoritos
                 </h2>
                 <div className="grid grid-cols-1 tablet:grid-cols-2 laptop:grid-cols-3 gap-4 max-w-[90%] tablet:max-w-6xl w-full">
-                    {favoriteParkingsData.length > 0 ? (
+                    {loading ? (
+                        <Refresh
+                            fontSize="large"
+                            className={
+                                "text-white cursor-pointer transition-transform duration-500 animate-spin"
+                            }
+                        />
+                    ) : favoriteParkingsData.length > 0 ? (
                         favoriteParkingsData.map((parking) => (
                             <ParkingDetailsBox
                                 key={parking.id}
