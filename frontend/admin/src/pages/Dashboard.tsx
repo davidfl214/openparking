@@ -89,6 +89,18 @@ export default function Dashboard() {
         try {
             setLoading(true);
             await updateUser(user);
+            Swal.fire({
+                toast: true,
+                position: isMobile ? "top" : "top-end",
+                icon: "success",
+                title: "<strong>Usuario actualizado</strong>",
+                text: "El usuario se ha actualizado correctamente.",
+                showConfirmButton: false,
+                timer: 2000,
+                background: "#fef2f2",
+                color: "#991b1b",
+                timerProgressBar: true,
+            });
         } catch (err: any) {
             Swal.fire({
                 toast: true,
@@ -112,6 +124,18 @@ export default function Dashboard() {
             setLoading(true);
             await deleteUser(userId);
             setUsers(users.filter((user) => user.id !== userId));
+            Swal.fire({
+                toast: true,
+                position: isMobile ? "top" : "top-end",
+                icon: "success",
+                title: "<strong>Usuario borrado</strong>",
+                text: "El usuario se ha borrado correctamente.",
+                showConfirmButton: false,
+                timer: 2000,
+                background: "#fef2f2",
+                color: "#991b1b",
+                timerProgressBar: true,
+            });
         } catch {
             Swal.fire({
                 toast: true,
@@ -145,6 +169,20 @@ export default function Dashboard() {
             setLoading(true);
             const newParking = await createParking(parking);
             setParkings([...parkings, newParking]);
+            setShowAddParkingModal(false);
+            setCreatingParkingData({});
+            Swal.fire({
+                toast: true,
+                position: isMobile ? "top" : "top-end",
+                icon: "success",
+                title: "<strong>Parking creado</strong>",
+                text: "El parking se ha creado correctamente.",
+                showConfirmButton: false,
+                timer: 2000,
+                background: "#fef2f2",
+                color: "#991b1b",
+                timerProgressBar: true,
+            });
         } catch (err: any) {
             Swal.fire({
                 toast: true,
@@ -172,6 +210,18 @@ export default function Dashboard() {
                     p.id === parking.id ? { ...p, ...editedParkingData } : p
                 )
             );
+            Swal.fire({
+                toast: true,
+                position: isMobile ? "top" : "top-end",
+                icon: "success",
+                title: "<strong>Parking actualizado</strong>",
+                text: "El parking se ha actualizado correctamente.",
+                showConfirmButton: false,
+                timer: 2000,
+                background: "#fef2f2",
+                color: "#991b1b",
+                timerProgressBar: true,
+            });
         } catch (err: any) {
             Swal.fire({
                 toast: true,
@@ -197,6 +247,18 @@ export default function Dashboard() {
             setLoading(true);
             await deleteParking(parkingId);
             setParkings(parkings.filter((p) => p.id !== parkingId));
+            Swal.fire({
+                toast: true,
+                position: isMobile ? "top" : "top-end",
+                icon: "success",
+                title: "<strong>Parking borrado</strong>",
+                text: "El parking se ha borrado correctamente.",
+                showConfirmButton: false,
+                timer: 2000,
+                background: "#fef2f2",
+                color: "#991b1b",
+                timerProgressBar: true,
+            });
         } catch {
             Swal.fire({
                 toast: true,
