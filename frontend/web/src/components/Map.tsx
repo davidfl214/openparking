@@ -42,9 +42,11 @@ export default function Map(): JSX.Element {
             const favorites = await getUserFavoritesParkings();
             setParkingFavorites(favorites);
         };
-
-        fetchFavorites();
-    }, []);
+        
+        if (authResponse) {
+            fetchFavorites();
+        }
+    }, [authResponse]);
 
     useEffect(() => {
         if (locationError) {

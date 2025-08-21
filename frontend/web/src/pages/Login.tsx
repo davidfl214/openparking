@@ -11,14 +11,6 @@ const setLocalStorageItems = (response: AuthResponse) => {
     localStorage.setItem("userRole", response.role || "");
     localStorage.setItem("userEmail", response.email || "");
     localStorage.setItem("userName", response.name || "");
-    localStorage.setItem(
-        "parkingFavorites",
-        JSON.stringify(
-            response.parkingFavorites
-                ? Array.from(response.parkingFavorites)
-                : []
-        )
-    );
 
     const expirationTime = 24 * 60 * 60 * 1000;
     localStorage.setItem(

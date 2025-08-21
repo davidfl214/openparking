@@ -14,7 +14,6 @@ const removeLocalStorageItems = (): void => {
     localStorage.removeItem("userEmail");
     localStorage.removeItem("userName");
     localStorage.removeItem("expiration");
-    localStorage.removeItem("parkingFavorites");
 };
 
 export default function Profile(): JSX.Element | null {
