@@ -9,7 +9,7 @@ export const fetchParkings = async (microserviceUrl: string): Promise<ParkingDat
     let attempt = 0;
     while (attempt < MAX_RETRIES) {
         try {
-            const response = await fetch(`${microserviceUrl}/parkings/status`);
+            const response = await fetch(`${microserviceUrl}/api/parkings/status`);
 
             if (!response.ok) {
                 throw new Error(`Failed to fetch parking data: ${response.status}`);

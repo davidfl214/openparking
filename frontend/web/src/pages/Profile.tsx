@@ -64,7 +64,7 @@ export default function Profile(): JSX.Element | null {
                 const parkingStatuses = parkingFavorites.map(
                     async (parkingId) => {
                         const response = await fetch(
-                            `${PARKINGS_MICROSERVICE_BASE_URL}/parkings/${parkingId}/status`
+                            `${PARKINGS_MICROSERVICE_BASE_URL}/api/parkings/${parkingId}/status`
                         );
                         if (!response.ok) {
                             throw new Error(
