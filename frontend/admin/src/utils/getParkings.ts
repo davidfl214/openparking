@@ -5,7 +5,7 @@ export default async function getParkings(): Promise<Parking[]> {
         import.meta.env.VITE_PARKINGS_MICROSERVICE_URL ||
         "http://localhost:8081";
 
-    const response = await fetch(`${PARKING_MICROSERVICE_BASE_URL}/parkings`, {
+    const response = await fetch(`${PARKING_MICROSERVICE_BASE_URL}/api/parkings`, {
         method: "GET"
     });
 

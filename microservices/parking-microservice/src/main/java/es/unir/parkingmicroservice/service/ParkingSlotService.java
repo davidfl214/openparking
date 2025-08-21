@@ -1,6 +1,6 @@
 package es.unir.parkingmicroservice.service;
 
-import es.unir.parkingmicroservice.dto.ParkingSlotStatus;
+import es.unir.parkingmicroservice.dto.ParkingStatus;
 import es.unir.parkingmicroservice.model.Parking;
 import es.unir.parkingmicroservice.model.ParkingSlot;
 import es.unir.parkingmicroservice.repository.ParkingSlotRepository;
@@ -99,8 +99,8 @@ public class ParkingSlotService {
                 if (associatedParking != null) {
                     List<ParkingSlot> parkingSlots = getParkingSlotsByParkingId(associatedParking.getId());
                     int occupiedSlots = (int) parkingSlots.stream().filter(ParkingSlot::isOccupied).count();
-                    ParkingSlotStatus updatedStatus =
-                            ParkingSlotStatus.builder().id(associatedParking.getId()).name(associatedParking.getName())
+                    ParkingStatus updatedStatus =
+                            ParkingStatus.builder().id(associatedParking.getId()).name(associatedParking.getName())
                                     .location(associatedParking.getLocation()).latitude(associatedParking.getLatitude())
                                     .longitude(associatedParking.getLongitude()).totalSlots(parkingSlots.size())
                                     .occupiedSlots(occupiedSlots).enabled(associatedParking.isEnabled()).build();

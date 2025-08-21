@@ -1,7 +1,7 @@
 package es.unir.parkingmicroservice.controller;
 
-import es.unir.parkingmicroservice.dto.ParkingDTO;
-import es.unir.parkingmicroservice.dto.ParkingSlotStatus;
+import es.unir.parkingmicroservice.dto.ParkingCreateDTO;
+import es.unir.parkingmicroservice.dto.ParkingStatus;
 import es.unir.parkingmicroservice.model.Parking;
 import es.unir.parkingmicroservice.service.ParkingService;
 import jakarta.validation.Valid;
@@ -25,7 +25,7 @@ public class ParkingController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createParking(@Valid @RequestBody ParkingDTO newParking) {
+    public ResponseEntity<Void> createParking(@Valid @RequestBody ParkingCreateDTO newParking) {
         parkingService.createParking(newParking);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -37,13 +37,13 @@ public class ParkingController {
     }
 
     @GetMapping("/status")
-    public ResponseEntity<List<ParkingSlotStatus>> getAllParkingStatus() {
+    public ResponseEntity<List<ParkingStatus>> getAllParkingStatus() {
         return ResponseEntity.ok(parkingService.getAllParkingStatus());
     }
 
     @GetMapping("/{id}/status")
-    public ResponseEntity<ParkingSlotStatus> getParkingStatus(@PathVariable("id") String id) {
-        ParkingSlotStatus status = parkingService.getParkingStatus(id);
+    public ResponseEntity<ParkingStatus> getParkingStatus(@PathVariable("id") String id) {
+        ParkingStatus status = parkingService.getParkingStatus(id);
         return ResponseEntity.ok(status);
     }
 }

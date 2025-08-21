@@ -4,8 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import es.unir.parkingmicroservice.config.MqttConfig;
 import es.unir.parkingmicroservice.dto.NewParkingEvent;
-import es.unir.parkingmicroservice.dto.ParkingDTO;
-import es.unir.parkingmicroservice.dto.ParkingSlotStatus;
+import es.unir.parkingmicroservice.dto.ParkingCreateDTO;
+import es.unir.parkingmicroservice.dto.ParkingStatus;
 import es.unir.parkingmicroservice.mapper.ParkingMapper;
 import es.unir.parkingmicroservice.model.Parking;
 import es.unir.parkingmicroservice.model.ParkingSlot;
@@ -36,7 +36,7 @@ public class ParkingService {
     }
 
     @Transactional
-    public void createParking(ParkingDTO newParking) {
+    public void createParking(ParkingCreateDTO newParking) {
         if (parkingRepository.existsByAdministratorEmail(newParking.getAdministratorEmail())) {
             throw new IllegalArgumentException("Parking with this administrator email already exists");
         }
@@ -52,7 +52,7 @@ public class ParkingService {
 
         List<ParkingSlot> parkingSlots = parkingSlotService.getParkingSlotsByParkingId(savedParking.getId());
         int occupiedSlots = (int) parkingSlots.stream().filter(ParkingSlot::isOccupied).count();
-        ParkingSlotStatus status = ParkingSlotStatus.builder().id(savedParking.getId()).name(savedParking.getName())
+        ParkingStatus status = ParkingStatus.builder().id(savedParking.getId()).name(savedParking.getName())
                 .location(savedParking.getLocation()).latitude(savedParking.getLatitude())
                 .longitude(savedParking.getLongitude()).totalSlots(parkingSlots.size()).occupiedSlots(occupiedSlots)
                 .enabled(savedParking.isEnabled()).build();
@@ -70,13 +70,13 @@ public class ParkingService {
         }
     }
 
-    public List<ParkingSlotStatus> getAllParkingStatus() {
+    public List<ParkingStatus> getAllParkingStatus() {
         List<Parking> parkings = parkingRepository.findAll();
-        List<ParkingSlotStatus> parkingSlotStatuses = new ArrayList<>();
+        List<ParkingStatus> parkingSlotStatuses = new ArrayList<>();
         for (Parking parking : parkings) {
             List<ParkingSlot> parkingSlots = parkingSlotService.getParkingSlotsByParkingId(parking.getId());
             int occupiedSlots = (int) parkingSlots.stream().filter(ParkingSlot::isOccupied).count();
-            ParkingSlotStatus status = ParkingSlotStatus.builder().id(parking.getId()).name(parking.getName())
+            ParkingStatus status = ParkingStatus.builder().id(parking.getId()).name(parking.getName())
                     .location(parking.getLocation()).latitude(parking.getLatitude()).longitude(parking.getLongitude())
                     .totalSlots(parkingSlots.size()).occupiedSlots(occupiedSlots).enabled(parking.isEnabled()).build();
             parkingSlotStatuses.add(status);
@@ -84,14 +84,14 @@ public class ParkingService {
         return parkingSlotStatuses;
     }
 
-    public ParkingSlotStatus getParkingStatus(String id) {
+    public ParkingStatus getParkingStatus(String id) {
         Parking parking = parkingRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Parking with id " + id + " does not exist"));
 
         List<ParkingSlot> parkingSlots = parkingSlotService.getParkingSlotsByParkingId(id);
         int occupiedSlots = (int) parkingSlots.stream().filter(ParkingSlot::isOccupied).count();
 
-        return ParkingSlotStatus.builder().id(parking.getId()).name(parking.getName()).location(parking.getLocation())
+        return ParkingStatus.builder().id(parking.getId()).name(parking.getName()).location(parking.getLocation())
                 .latitude(parking.getLatitude()).longitude(parking.getLongitude()).totalSlots(parkingSlots.size())
                 .occupiedSlots(occupiedSlots).enabled(parking.isEnabled()).build();
     }
