@@ -31,7 +31,7 @@ export default function Dashboard() {
 
     useEffect(() => {
         const checkAdmin = async () => {
-            const isValid = true; //await validateToken();
+            const isValid = await validateToken();
             if (!isValid) {
                 Swal.fire({
                     toast: true,
