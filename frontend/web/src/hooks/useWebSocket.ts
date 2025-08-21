@@ -40,6 +40,7 @@ export const useWebSocket = (
                     });
                 });
                 stompClient.subscribe("/topic/deletedParking", (message) => {
+                    console.log("Parking deleted:", message.body);
                     const parkingId: string = JSON.parse(message.body);
                     setParkingData((prevParkings) =>
                         prevParkings.filter((p) => p.id !== parkingId)
