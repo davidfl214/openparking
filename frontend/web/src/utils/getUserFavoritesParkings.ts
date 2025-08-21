@@ -20,5 +20,5 @@ export const getUserFavoritesParkings = async () => {
     }
 
     const data = await res.json();
-    return data;
+    return data.parkingFavorites;
 };
