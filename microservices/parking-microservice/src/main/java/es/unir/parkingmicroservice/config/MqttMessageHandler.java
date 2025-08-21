@@ -2,6 +2,9 @@ package es.unir.parkingmicroservice.config;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import es.unir.parkingmicroservice.model.Parking;
+import es.unir.parkingmicroservice.service.ParkingService;
 import es.unir.parkingmicroservice.service.ParkingSlotService;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +25,7 @@ import java.util.regex.Pattern;
 public class MqttMessageHandler implements MessageHandler {
 
     private final ParkingSlotService parkingSlotService;
+    private final ParkingService parkingService;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final Pattern topicPattern = Pattern.compile("parking/([^/]+)");
@@ -57,7 +61,9 @@ public class MqttMessageHandler implements MessageHandler {
                 timestamp = LocalDateTime.now();
             }
 
-            parkingSlotService.updateSlotOccupancy(parkingId, floor, slot, isOccupied, timestamp);
+            Parking associatedParking = parkingService.getParkingById(parkingId);
+
+            parkingSlotService.updateSlotOccupancy(parkingId, floor, slot, isOccupied, timestamp, associatedParking);
 
 
         } catch (Exception e) {

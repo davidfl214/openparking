@@ -81,7 +81,7 @@ public class ParkingSlotService {
 
     @Transactional
     public void updateSlotOccupancy(String parkingId, Integer floor, Integer slot, boolean isOccupied,
-                                    LocalDateTime messageTimestamp) {
+                                    LocalDateTime messageTimestamp, Parking associatedParking) {
         try {
             Optional<ParkingSlot> slotOptional =
                     parkingSlotRepository.findByParkingIdAndFloorAndSlot(parkingId, floor, slot);
@@ -95,9 +95,6 @@ public class ParkingSlotService {
                 parkingSlot.setOccupied(isOccupied);
                 parkingSlot.setLastUpdated(messageTimestamp);
                 parkingSlotRepository.save(parkingSlot);
-
-
-                Parking associatedParking = parkingService.getParkingById(parkingSlot.getParkingId());
                 
                 if (associatedParking != null) {
                     List<ParkingSlot> parkingSlots = getParkingSlotsByParkingId(associatedParking.getId());
