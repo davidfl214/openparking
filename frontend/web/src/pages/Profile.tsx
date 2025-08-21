@@ -176,7 +176,7 @@ export default function Profile(): JSX.Element | null {
         if (authResponse) {
             getFavoriteParkings();
         }
-    }, [authResponse, isMobile]);
+    }, [authResponse, isMobile, parkingFavorites]);
 
     if (!authResponse) {
         return null;
