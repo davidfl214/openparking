@@ -19,6 +19,7 @@ import java.util.Optional;
 public class ParkingSlotService {
 
     private final ParkingSlotRepository parkingSlotRepository;
+    private final ParkingService parkingService;
     private final SimpMessagingTemplate messagingTemplate;
 
     public void generateInitialParkingSlots(Parking parking) {
@@ -26,7 +27,7 @@ public class ParkingSlotService {
         for (int floor = 1; floor <= parking.getNumberOfFloors(); floor++) {
             for (int slot = 1; slot <= parking.getSlotsPerFloor(); slot++) {
                 ParkingSlot parkingSlot =
-                        ParkingSlot.builder().parking(parking).floor(floor).slot(slot).isOccupied(false).build();
+                        ParkingSlot.builder().parkingId(parking.getId()).floor(floor).slot(slot).isOccupied(false).build();
                 parkingSlots.add(parkingSlot);
             }
         }
@@ -61,7 +62,7 @@ public class ParkingSlotService {
 
     public Optional<ParkingSlot> updateSlot(String id, ParkingSlot updatedSlot) {
         return parkingSlotRepository.findById(id).map(existing -> {
-            existing.setParking(updatedSlot.getParking());
+            existing.setParkingId(updatedSlot.getParkingId());
             existing.setFloor(updatedSlot.getFloor());
             existing.setSlot(updatedSlot.getSlot());
             existing.setOccupied(updatedSlot.isOccupied());
@@ -95,7 +96,9 @@ public class ParkingSlotService {
                 parkingSlot.setLastUpdated(messageTimestamp);
                 parkingSlotRepository.save(parkingSlot);
 
-                Parking associatedParking = parkingSlot.getParking();
+
+                Parking associatedParking = parkingService.getParkingById(parkingSlot.getParkingId());
+                
                 if (associatedParking != null) {
                     List<ParkingSlot> parkingSlots = getParkingSlotsByParkingId(associatedParking.getId());
                     int occupiedSlots = (int) parkingSlots.stream().filter(ParkingSlot::isOccupied).count();
