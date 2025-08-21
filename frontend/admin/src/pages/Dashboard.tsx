@@ -97,8 +97,8 @@ export default function Dashboard() {
                 text: "El usuario se ha actualizado correctamente.",
                 showConfirmButton: false,
                 timer: 2000,
-                background: "#fef2f2",
-                color: "#991b1b",
+                background: "#f0fdf4",
+                color: "#166534",
                 timerProgressBar: true,
             });
         } catch (err: any) {
@@ -132,8 +132,8 @@ export default function Dashboard() {
                 text: "El usuario se ha borrado correctamente.",
                 showConfirmButton: false,
                 timer: 2000,
-                background: "#fef2f2",
-                color: "#991b1b",
+                background: "#f0fdf4",
+                color: "#166534",
                 timerProgressBar: true,
             });
         } catch {
@@ -179,8 +179,8 @@ export default function Dashboard() {
                 text: "El parking se ha creado correctamente.",
                 showConfirmButton: false,
                 timer: 2000,
-                background: "#fef2f2",
-                color: "#991b1b",
+                background: "#f0fdf4",
+                color: "#166534",
                 timerProgressBar: true,
             });
         } catch (err: any) {
@@ -218,8 +218,8 @@ export default function Dashboard() {
                 text: "El parking se ha actualizado correctamente.",
                 showConfirmButton: false,
                 timer: 2000,
-                background: "#fef2f2",
-                color: "#991b1b",
+                background: "#f0fdf4",
+                color: "#166534",
                 timerProgressBar: true,
             });
         } catch (err: any) {
@@ -255,8 +255,8 @@ export default function Dashboard() {
                 text: "El parking se ha borrado correctamente.",
                 showConfirmButton: false,
                 timer: 2000,
-                background: "#fef2f2",
-                color: "#991b1b",
+                background: "#f0fdf4",
+                color: "#166534",
                 timerProgressBar: true,
             });
         } catch {
