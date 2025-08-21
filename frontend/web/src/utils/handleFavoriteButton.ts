@@ -26,7 +26,7 @@ export const handleFavoriteButton = async (
         );
     }
 
-    const parkingFavorites = await res.json();
+    const data = await res.json();
 
-    setParkingFavorites(parkingFavorites);
+    setParkingFavorites(data.parkingFavorites);
 };
