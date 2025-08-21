@@ -229,27 +229,30 @@ export default function Profile(): JSX.Element | null {
                 <h2 className="text-3xl font-bold text-white">
                     Parkings favoritos
                 </h2>
-                <div className="grid grid-cols-1 tablet:grid-cols-2 laptop:grid-cols-3 gap-4 max-w-[90%] tablet:max-w-6xl w-full">
-                    {loading ? (
-                        <Refresh
-                            fontSize="large"
-                            className={
-                                "text-white cursor-pointer transition-transform duration-500 animate-spin"
-                            }
-                        />
-                    ) : favoriteParkingsData.length > 0 ? (
-                        favoriteParkingsData.map((parking) => (
-                            <ParkingDetailsBox
-                                key={parking.id}
-                                parking={parking}
-                            />
-                        ))
-                    ) : (
-                        <p className="text-white">
-                            No tienes parkings favoritos.
-                        </p>
-                    )}
-                </div>
+                {loading ? (
+                    <Refresh
+                        fontSize="large"
+                        className={
+                            "text-white cursor-pointer transition-transform duration-500 animate-spin"
+                        }
+                        style={{ fontSize: 64 }}
+                    />
+                ) : (
+                    <div className="grid grid-cols-1 tablet:grid-cols-2 laptop:grid-cols-3 gap-4 max-w-[90%] tablet:max-w-6xl w-full">
+                        {favoriteParkingsData.length > 0 ? (
+                            favoriteParkingsData.map((parking) => (
+                                <ParkingDetailsBox
+                                    key={parking.id}
+                                    parking={parking}
+                                />
+                            ))
+                        ) : (
+                            <p className="text-white">
+                                No tienes parkings favoritos.
+                            </p>
+                        )}
+                    </div>
+                )}
             </div>
         </div>
     );
