@@ -496,8 +496,9 @@ export default function Dashboard() {
                                         <input
                                             type="checkbox"
                                             checked={
-                                                creatingParkingData.enabled ??
-                                                true
+                                                creatingParkingData.enabled == undefined
+                                                    ? false
+                                                    : creatingParkingData.enabled
                                             }
                                             onChange={(e) =>
                                                 setCreatingParkingData({
