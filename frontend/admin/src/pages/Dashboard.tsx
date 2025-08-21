@@ -634,7 +634,7 @@ export default function Dashboard() {
                                     <div className="flex mt-2 gap-2">
                                         <button
                                             onClick={() =>
-                                                handleUpdateParking(parking)
+                                                handleUpdateParking(editedParkingData as Parking)
                                             }
                                             className="bg-secondary border-2 border-secondary cursor-pointer text-white py-2 px-4 rounded-md hover:bg-[#34495e] hover:border-secondary transition-colors duration-200"
                                         >
