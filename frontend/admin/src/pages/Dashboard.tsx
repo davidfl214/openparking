@@ -453,10 +453,10 @@ export default function Dashboard() {
                                                 className="bg-[#2c3e50] text-white border border-[#4a6572] p-2.5 rounded-lg cursor-pointer min-w-[100px]"
                                             >
                                                 <option value="USER">
-                                                    USER
+                                                    Usuario
                                                 </option>
                                                 <option value="ADMIN">
-                                                    ADMIN
+                                                    Administrador
                                                 </option>
                                             </select>
                                         </div>
