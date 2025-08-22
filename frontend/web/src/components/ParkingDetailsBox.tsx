@@ -71,7 +71,6 @@ export default function ParkingDetailsBox({
                         {percentOccupied.toFixed(1)}%
                     </span>
                 </div>
-                {/* Progress Bar */}
                 <div className="w-full bg-[#2c3e50]/50 rounded-full h-2.5">
                     <div
                         className={`h-2.5 rounded-full transition-all duration-500 ${statusStyle.progress}`}
@@ -88,7 +87,7 @@ export default function ParkingDetailsBox({
 
             <div className="flex items-start gap-3 p-3 bg-[#2c3e50]/30 rounded-lg border border-[#4a6572]/20">
                 <div className="w-2 h-2 bg-blue-400 rounded-full mt-1.5 flex-shrink-0"></div>
-                <div>
+                <div className="min-w-0">
                     <p className="text-sm text-gray-400 mb-0.5">Ubicación</p>
                     <p
                         className="text-white font-medium text-sm truncate"
@@ -99,7 +98,6 @@ export default function ParkingDetailsBox({
                 </div>
             </div>
 
-            {/* Action Button */}
             <button
                 onClick={handleOpenMaps}
                 className="w-full mt-2 flex items-center justify-center gap-2 bg-[#5d6d7e] border-2 border-[#5d6d7e] cursor-pointer text-white py-2.5 px-4 rounded-lg hover:bg-[#34495e] hover:border-white transition-all duration-200 font-medium focus:ring-2 focus:ring-blue-400 focus:outline-none"
