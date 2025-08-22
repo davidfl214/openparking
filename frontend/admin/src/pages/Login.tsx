@@ -5,10 +5,9 @@ import { useNavigate } from "react-router-dom";
 import { LocationOn } from "@mui/icons-material";
 import { TextField, Button } from "@mui/material";
 import type { AuthResponse } from "../types/AuthResponse";
+import { AUTH_MICROSERVICE_BASE_URL } from "../constants/constants";
 
 export default function Login() {
-    const AUTH_MICROSERVICE_BASE_URL =
-        import.meta.env.VITE_AUTH_MICROSERVICE_URL || "http://localhost:8080";
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");

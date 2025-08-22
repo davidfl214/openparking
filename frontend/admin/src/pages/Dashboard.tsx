@@ -9,7 +9,12 @@ import type Parking from "../types/Parking";
 import getUsers from "../utils/getUsers";
 import getParkings from "../utils/getParkings";
 import { deleteUser, updateUser } from "../utils/userOperations";
-import { createParking, deleteParking, updateParking } from "../utils/parkingOperations";
+import {
+    createParking,
+    deleteParking,
+    updateParking,
+} from "../utils/parkingOperations";
+import { AUTH_MICROSERVICE_BASE_URL } from "../constants/constants";
 
 export default function Dashboard() {
     const { isMobile } = useContext(DataContext);
@@ -85,6 +90,76 @@ export default function Dashboard() {
         checkAdmin();
     }, [isMobile, navigate]);
 
+    const handleLogout = async () => {
+        const result = await Swal.fire({
+            title: "<strong>Confirmar cierre de sesión</strong>",
+            text: "¿Estás seguro de que deseas cerrar sesión?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Sí, cerrar sesión",
+            cancelButtonText: "Cancelar",
+            background: "#ffffff",
+            color: "#000000",
+            timerProgressBar: true,
+            confirmButtonColor: "#1e2939",
+            cancelButtonColor: "red",
+            iconColor: "#f59e0b",
+        });
+
+        if (result.isConfirmed) {
+            try {
+                setLoading(true);
+                const response = await fetch(
+                    `${AUTH_MICROSERVICE_BASE_URL}/api/auth/logout`,
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        credentials: "include",
+                    }
+                );
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(
+                        errorData?.message || "Error al cerrar sesión"
+                    );
+                }
+
+                Swal.fire({
+                    toast: true,
+                    position: isMobile ? "top" : "top-end",
+                    icon: "success",
+                    title: "<strong>Sesión cerrada</strong>",
+                    text: "Has cerrado sesión correctamente",
+                    showConfirmButton: false,
+                    timer: 2000,
+                    background: "#f0fdf4",
+                    color: "#166534",
+                    timerProgressBar: true,
+                });
+
+                navigate("/login");
+            } catch (err: any) {
+                Swal.fire({
+                    toast: true,
+                    position: isMobile ? "top" : "top-end",
+                    icon: "error",
+                    title: "<strong>Error al cerrar sesión</strong>",
+                    text: "Error inesperado al cerrar sesión",
+                    showConfirmButton: false,
+                    timer: 2000,
+                    background: "#fef2f2",
+                    color: "#991b1b",
+                    timerProgressBar: true,
+                });
+            } finally {
+                setLoading(false);
+            }
+        }
+    };
+
     const handleUpdateUser = async (user: User) => {
         try {
             setLoading(true);
@@ -108,7 +183,9 @@ export default function Dashboard() {
                 position: isMobile ? "top" : "top-end",
                 icon: "error",
                 title: "<strong>Error al actualizar el usuario</strong>",
-                text: err.message || "No se pudo actualizar el usuario. Inténtalo más tarde.",
+                text:
+                    err.message ||
+                    "No se pudo actualizar el usuario. Inténtalo más tarde.",
                 showConfirmButton: false,
                 timer: 2000,
                 background: "#fef2f2",
@@ -190,7 +267,9 @@ export default function Dashboard() {
                 position: isMobile ? "top" : "top-end",
                 icon: "error",
                 title: "<strong>Error al crear el parking</strong>",
-                text: err.message || "No se pudo crear el parking. Inténtalo más tarde.",
+                text:
+                    err.message ||
+                    "No se pudo crear el parking. Inténtalo más tarde.",
                 showConfirmButton: false,
                 timer: 2000,
                 background: "#fef2f2",
@@ -225,7 +304,9 @@ export default function Dashboard() {
                 position: isMobile ? "top" : "top-end",
                 icon: "error",
                 title: "<strong>Error al actualizar el parking</strong>",
-                text: err.message || "No se pudo actualizar el parking. Inténtalo más tarde.",
+                text:
+                    err.message ||
+                    "No se pudo actualizar el parking. Inténtalo más tarde.",
                 showConfirmButton: false,
                 timer: 2000,
                 background: "#fef2f2",
@@ -289,7 +370,19 @@ export default function Dashboard() {
 
     return (
         <div className="p-8 bg-primary min-h-screen text-white flex flex-col gap-8">
-            <h1 className="text-4xl text-center font-semibold">Dashboard</h1>
+            <div className="flex flex-col justify-center items-center gap-4">
+                <h1 className="text-4xl text-center font-semibold">
+                    Dashboard de administración
+                </h1>
+
+                <button
+                    className="bg-secondary border-2 border-secondary cursor-pointer text-white py-2 px-4 rounded-md hover:bg-primary hover:border-secondary transition-colors duration-200"
+                    disabled={loading}
+                    onClick={handleLogout}
+                >
+                    Cerrar sesión
+                </button>
+            </div>
             <div className="flex flex-col gap-4">
                 <h2 className="text-2xl">Gestión de Usuarios</h2>
                 <div className="grid grid-cols-1 tablet:grid-cols-3 laptop:grid-cols-5 gap-6">
@@ -371,7 +464,9 @@ export default function Dashboard() {
                                     className="flex flex-col gap-2"
                                     onSubmit={(e) => {
                                         e.preventDefault();
-                                        handleCreateParking(creatingParkingData as Parking);
+                                        handleCreateParking(
+                                            creatingParkingData as Parking
+                                        );
                                     }}
                                 >
                                     <label className="block">Nombre:</label>
@@ -430,7 +525,9 @@ export default function Dashboard() {
                                         onChange={(e) =>
                                             setCreatingParkingData({
                                                 ...creatingParkingData,
-                                                latitude: Number(e.target.value),
+                                                latitude: Number(
+                                                    e.target.value
+                                                ),
                                             })
                                         }
                                         className="w-full p-2 bg-[#2c3e50] border border-[#4a6572] text-white rounded"
@@ -445,7 +542,9 @@ export default function Dashboard() {
                                         onChange={(e) =>
                                             setCreatingParkingData({
                                                 ...creatingParkingData,
-                                                longitude: Number(e.target.value),
+                                                longitude: Number(
+                                                    e.target.value
+                                                ),
                                             })
                                         }
                                         className="w-full p-2 bg-[#2c3e50] border border-[#4a6572] text-white rounded"
@@ -496,7 +595,8 @@ export default function Dashboard() {
                                         <input
                                             type="checkbox"
                                             checked={
-                                                creatingParkingData.enabled == undefined
+                                                creatingParkingData.enabled ==
+                                                undefined
                                                     ? false
                                                     : creatingParkingData.enabled
                                             }
@@ -635,7 +735,9 @@ export default function Dashboard() {
                                     <div className="flex mt-2 gap-2">
                                         <button
                                             onClick={() =>
-                                                handleUpdateParking(editedParkingData as Parking)
+                                                handleUpdateParking(
+                                                    editedParkingData as Parking
+                                                )
                                             }
                                             className="bg-secondary border-2 border-secondary cursor-pointer text-white py-2 px-4 rounded-md hover:bg-[#34495e] hover:border-secondary transition-colors duration-200"
                                         >

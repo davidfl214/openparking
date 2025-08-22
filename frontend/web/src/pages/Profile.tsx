@@ -6,7 +6,7 @@ import { AccountCircle, ArrowBack, Email, Refresh } from "@mui/icons-material";
 import ParkingDetailsBox from "../components/ParkingDetailsBox";
 import type { ParkingData } from "../types/parking";
 import { Button } from "@mui/material";
-import { PARKINGS_MICROSERVICE_BASE_URL } from "../constants/constants";
+import { AUTH_MICROSERVICE_BASE_URL, PARKINGS_MICROSERVICE_BASE_URL } from "../constants/constants";
 import { getUserFavoritesParkings } from "../utils/getUserFavoritesParkings";
 
 const removeLocalStorageItems = (): void => {
@@ -116,9 +116,7 @@ export default function Profile(): JSX.Element | null {
             try {
                 setLoggingOut(true);
                 const response = await fetch(
-                    `${
-                        import.meta.env.VITE_AUTH_MICROSERVICE_URL
-                    }/api/auth/logout`,
+                    `${AUTH_MICROSERVICE_BASE_URL}/api/auth/logout`,
                     {
                         method: "POST",
                         headers: {
