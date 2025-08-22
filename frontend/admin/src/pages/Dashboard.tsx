@@ -429,10 +429,6 @@ export default function Dashboard() {
                                             <label className="block text-sm font-medium text-gray-300 mb-1">
                                                 Rol del usuario
                                             </label>
-                                            <p className="text-xs text-gray-400">
-                                                Define los permisos y accesos
-                                                del usuario
-                                            </p>
                                         </div>
 
                                         <div className="ml-4">
@@ -454,44 +450,16 @@ export default function Dashboard() {
                                                         )
                                                     );
                                                 }}
-                                                className="bg-[#2c3e50] text-white border border-[#4a6572] p-2.5 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200 cursor-pointer min-w-[100px]"
+                                                className="bg-[#2c3e50] text-white border border-[#4a6572] p-2.5 rounded-lg cursor-pointer min-w-[100px]"
                                             >
                                                 <option value="USER">
-                                                    Usuario
+                                                    USER
                                                 </option>
                                                 <option value="ADMIN">
-                                                    Admin
+                                                    ADMIN
                                                 </option>
                                             </select>
                                         </div>
-                                    </div>
-                                </div>
-
-                                <div className="grid grid-cols-2 gap-3">
-                                    <div className="p-3 bg-[#2c3e50]/30 rounded-lg border border-[#4a6572]/20 text-center">
-                                        <div className="flex items-center justify-center gap-2">
-                                            <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                                            <span className="text-sm text-gray-300">
-                                                Estado
-                                            </span>
-                                        </div>
-                                        <p className="text-green-400 font-medium mt-1">
-                                            Activo
-                                        </p>
-                                    </div>
-
-                                    <div className="p-3 bg-[#2c3e50]/30 rounded-lg border border-[#4a6572]/20 text-center">
-                                        <div className="flex items-center justify-center gap-2">
-                                            <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
-                                            <span className="text-sm text-gray-300">
-                                                Tipo
-                                            </span>
-                                        </div>
-                                        <p className="text-blue-400 font-medium mt-1">
-                                            {user.role === "ADMIN"
-                                                ? "Administrador"
-                                                : "Usuario"}
-                                        </p>
                                     </div>
                                 </div>
 
@@ -501,7 +469,7 @@ export default function Dashboard() {
                                         className="flex-1 bg-secondary border-2 border-secondary cursor-pointer text-white py-2.5 px-4 rounded-lg hover:bg-[#34495e] hover:border-secondary transition-all duration-200 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                                         disabled={loading}
                                     >
-                                        💾 Actualizar
+                                        Actualizar
                                     </button>
                                     <button
                                         onClick={() =>
@@ -510,7 +478,7 @@ export default function Dashboard() {
                                         className="flex-1 bg-[#95a5a6] border-2 border-[#95a5a6] cursor-pointer text-white py-2.5 px-4 rounded-lg hover:bg-[#34495e] hover:border-[#95a5a6] transition-all duration-200 font-medium focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
                                         disabled={loading}
                                     >
-                                        🗑️ Borrar
+                                        Borrar
                                     </button>
                                 </div>
                             </div>
