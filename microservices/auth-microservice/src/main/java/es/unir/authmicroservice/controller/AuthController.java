@@ -50,6 +50,7 @@ public class AuthController {
         jwtCookie.setMaxAge(0);
         jwtCookie.setPath("/");
         jwtCookie.setSecure(true);
+        jwtCookie.setDomain("openparking.me");
 
         response.addCookie(jwtCookie);
 
