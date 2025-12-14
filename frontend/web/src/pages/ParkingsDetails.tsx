@@ -106,7 +106,12 @@ export default function ParkingDetailsPage(): JSX.Element {
 
     const parkingDetails = parkingInfo[0].parking;
 
-
+    const sortedParkingInfo = [...parkingInfo].sort((a, b) => {
+        if (a.floor !== b.floor) {
+            return a.floor - b.floor;
+        }
+        return a.slot - b.slot;
+    });
 
     return (
         <div className="mx-auto p-4 bg-primary">
@@ -141,41 +146,13 @@ export default function ParkingDetailsPage(): JSX.Element {
                 <h2 className="text-2xl font-semibold mb-4 text-white">
                     Estado de las Plazas
                 </h2>
-                <div className="space-y-8">
-                    {Object.keys(
-                        parkingInfo.reduce((acc: Record<number, ParkingSlotData[]>, slot: ParkingSlotData) => {
-                            acc[slot.floor] = acc[slot.floor] || [];
-                            acc[slot.floor].push(slot);
-                            return acc;
-                        }, {} as Record<number, ParkingSlotData[]>)
-                    )
-                        .map(Number)
-                        .sort((a: number, b: number) => a - b)
-                        .map((floor: number) => {
-                            const floorSlots = parkingInfo
-                                .filter((p: ParkingSlotData) => p.floor === floor)
-                                .sort((a: ParkingSlotData, b: ParkingSlotData) => a.slot - b.slot);
-
-                            return (
-                                <div key={floor} className="bg-white/5 p-4 rounded-xl">
-                                    <h3 className="text-xl font-bold text-white mb-4 border-b border-white/10 pb-2">
-                                        Planta {floor}
-                                    </h3>
-                                    <div className="flex overflow-x-auto pb-4 gap-4 scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
-                                        {floorSlots.map((slotData) => (
-                                            <div
-                                                key={slotData.id}
-                                                className="min-w-[280px] shrink-0"
-                                            >
-                                                <ParkingSlotDetailsBox
-                                                    parking={slotData}
-                                                />
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            );
-                        })}
+                <div className="grid grid-cols-2 laptop:grid-cols-3 gap-4">
+                    {sortedParkingInfo.map((slotData) => (
+                        <ParkingSlotDetailsBox
+                            key={slotData.id}
+                            parking={slotData}
+                        />
+                    ))}
                 </div>
             </div>
         </div>

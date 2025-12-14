@@ -45,7 +45,7 @@ public class AuthController {
 
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(HttpServletResponse response) {
-        Cookie jwtCookie = new Cookie("jwt", "");
+        Cookie jwtCookie = new Cookie("jwt", null);
         jwtCookie.setHttpOnly(true);
         jwtCookie.setMaxAge(0);
         jwtCookie.setPath("/");
@@ -73,14 +73,14 @@ public class AuthController {
 
     @PatchMapping("/favorite-parking")
     public ResponseEntity<ParkingFavoritesResponse> addParkingToFavorites(@RequestParam String parkingId,
-            HttpServletRequest request) {
+                                                                          HttpServletRequest request) {
         String token = getToken(request);
         return ResponseEntity.ok(authService.addParkingToFavorites(parkingId, token));
     }
 
     @DeleteMapping("/favorite-parking")
     public ResponseEntity<ParkingFavoritesResponse> removeParkingFromFavorites(@RequestParam String parkingId,
-            HttpServletRequest request) {
+                                                                               HttpServletRequest request) {
         String token = getToken(request);
         return ResponseEntity.ok(authService.removeParkingFromFavorites(parkingId, token));
     }
